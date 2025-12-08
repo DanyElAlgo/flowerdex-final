@@ -4,13 +4,24 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -19,9 +30,16 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.example.flowerdexapp.ui.theme.FlowerdexAppTheme
 
 class MainActivity : ComponentActivity() {
@@ -69,6 +87,7 @@ enum class TipoExposicion {
 @Composable
 fun SmallTopAppBarExample(modifier: Modifier = Modifier) {
     Scaffold(
+        modifier = modifier,
         topBar = {
             TopAppBar(
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -98,11 +117,63 @@ fun SmallTopAppBarExample(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun FlowerListItem(flower: Flor, modifier: Modifier = Modifier) {
-    Text(
-        text = flower.nombreComun,
+fun ImageExample(
+    modifier: Modifier = Modifier,
+    sizeDp: Int = 200,
+    borderWidthDp: Int = 2
+) {
+    val shape = RoundedCornerShape(12.dp)
+    Box(
         modifier = modifier
-    )
+            .fillMaxWidth()
+            .aspectRatio(1f),
+        contentAlignment = Alignment.Center
+    ) {
+        Box(
+            modifier = Modifier
+                .size(sizeDp.dp)
+                .clip(shape)
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.placeholder),
+                contentDescription = "Imagen",
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.matchParentSize()
+            )
+            Box(
+                modifier = Modifier
+                    .matchParentSize()
+                    .border(borderWidthDp.dp, Color.Black, shape)
+            )
+        }
+    }
+}
+
+@Composable
+fun FlowerListItem(flower: Flor, modifier: Modifier = Modifier) {
+    Column(modifier = modifier) {
+        // datos de la flor
+        Row(modifier = Modifier.padding(16.dp)) {
+            ImageExample(modifier = Modifier.width(56.dp))
+            Column(modifier = Modifier.padding(start = 16.dp)) {
+                Text(
+                    text = flower.nombreComun,
+                    style = MaterialTheme.typography.bodyLarge
+                )
+                Text(
+                    text = flower.nombreCientifico,
+                    style = MaterialTheme.typography.bodyMedium
+                )
+                Text(
+                    text = "Fecha obtención: ${flower.fechaAvistamiento ?: "Desconocida"}",
+                    style = MaterialTheme.typography.bodySmall
+                )
+            }
+        }
+        // linea divisoria
+        HorizontalDivider(thickness = 2.dp)
+    }
+
 }
 fun FlowerBlockItem(flower: Flor, modifier: Modifier = Modifier) {
     // Aquí se definirá el diseño del bloque de cada flor
@@ -110,12 +181,8 @@ fun FlowerBlockItem(flower: Flor, modifier: Modifier = Modifier) {
 
 @Composable
 fun IndexPage(modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello!",
-        modifier = modifier
-    )
 //    Añadir un elmemento que permita organizar las flores por diferentes criterios y cambiar la vista entre lista y bloques
-    LazyColumn {
+    LazyColumn(modifier = modifier) {
         items(10) { index ->
             FlowerListItem(
                 flower = Flor(
