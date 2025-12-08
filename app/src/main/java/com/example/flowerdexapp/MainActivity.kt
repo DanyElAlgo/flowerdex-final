@@ -20,8 +20,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             FlowerdexAppTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
+                    IndexPage(
                         modifier = Modifier.padding(innerPadding)
                     )
                 }
@@ -30,10 +29,35 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+//Método de guardado, se moverá a otros archivos más adelante
+data class Flor(
+    val id: Long = 0,
+    val nombreCientifico: String,
+    val nombreComun: String,
+    val familia: String,
+
+    // Requisitos Ambientales
+    val exposicionSolar: TipoExposicion,
+    val frecuenciaRiego: Int, // Días entre riegos
+    val temperaturaMinima: Double,
+
+    // Características Visuales
+    val colores: List<String>,
+    val esToxica: Boolean,
+
+    // Datos del Usuario
+    val fechaAvistamiento: Long? = null,
+    val fotoUri: String? = null
+)
+
+enum class TipoExposicion {
+    SOL_DIRECTO, SEMI_SOMBRA, SOMBRA_TOTAL
+}
+
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
+fun IndexPage(modifier: Modifier = Modifier) {
     Text(
-        text = "Hello $name!",
+        text = "Hello!",
         modifier = modifier
     )
 }
@@ -42,6 +66,6 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
 @Composable
 fun GreetingPreview() {
     FlowerdexAppTheme {
-        Greeting("Android")
+        IndexPage()
     }
 }
