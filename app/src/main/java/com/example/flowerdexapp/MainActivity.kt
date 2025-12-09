@@ -84,12 +84,13 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-//Método de guardado, se moverá a otros archivos más adelante
+//Métodó de guardado, se moverá a otros archivos más adelante
 data class Flor(
     val id: Long = 0,
     val nombreCientifico: String,
     val nombreComun: String,
     val familia: String,
+    val descripcion: String? = null,
 
     // Requisitos Ambientales
     val exposicionSolar: TipoExposicion,
@@ -256,7 +257,7 @@ fun SmallTopAppBarExample(modifier: Modifier = Modifier) {
             )
         },
     ) { innerPadding ->
-        IndexPage(modifier = Modifier.padding(innerPadding))
+        FlowerPage(modifier = Modifier.padding(innerPadding))
     }
 }
 
@@ -415,6 +416,92 @@ fun IndexPage(modifier: Modifier = Modifier) {
             }
         } else {
             // Implementar vista de bloques aquí
+        }
+    }
+}
+
+@Composable
+fun FlowerPage(modifier: Modifier = Modifier) {
+    // Página de detalles de la flor
+    var flor = flowerDatabase[0] // Ejemplo: tomar la primera flor
+    Column(modifier = modifier.padding(16.dp)) {
+        Image(
+            painter = painterResource(id = R.drawable.placeholder),
+            contentDescription = "Imagen de la flor",
+            contentScale = ContentScale.Crop,
+            modifier = Modifier
+                .fillMaxWidth()
+                .aspectRatio(1f)
+                .clip(RoundedCornerShape(12.dp))
+        )
+        Spacer(modifier = Modifier.size(16.dp))
+        Column(modifier = Modifier.padding(start = 16.dp)) {
+            Text(
+                text = flor.nombreComun,
+                style = MaterialTheme.typography.bodyLarge
+            )
+            Text(
+                text = flor.nombreCientifico,
+                style = MaterialTheme.typography.bodyMedium
+            )
+            Text(
+                text = "Fecha obtención: ${flor.fechaAvistamiento ?: "Desconocida"}",
+                style = MaterialTheme.typography.bodySmall
+            )
+        }
+        Text(
+            text = "Descripción general:",
+            style = MaterialTheme.typography.headlineSmall,
+        )
+        Text(
+            text = flor.descripcion ?: "Descripción no disponible.",
+            style = MaterialTheme.typography.bodyMedium,
+        )
+        Text(
+            text = "Información adicional:",
+            style = MaterialTheme.typography.headlineSmall,
+        )
+        Column(modifier = Modifier.padding(start = 16.dp)) {
+            Column(modifier = Modifier.padding(start = 16.dp)) {
+                Text(
+                    text = "Familia:",
+                    style = MaterialTheme.typography.bodyLarge
+                )
+                Text(
+                    text = flor.familia,
+                    style = MaterialTheme.typography.bodyMedium
+                )
+            }
+            Column(modifier = Modifier.padding(start = 16.dp)) {
+                Text(
+                    text = "Temporada:",
+                    style = MaterialTheme.typography.bodyLarge
+                )
+                Text(
+                    text = "", //TODO
+                    style = MaterialTheme.typography.bodyMedium
+                )
+            }
+            Column(modifier = Modifier.padding(start = 16.dp)) {
+                Text(
+                    text = "Exposición al sol preferida:",
+                    style = MaterialTheme.typography.bodyLarge
+                )
+                Text(
+                    text = "flor.exposicionSolar", //TODO
+                    style = MaterialTheme.typography.bodyMedium
+                )
+            }
+            Column(modifier = Modifier.padding(start = 16.dp)) {
+                Text(
+                    text = "Alcalinidad preferida:",
+                    style = MaterialTheme.typography.bodyLarge
+                )
+                Text(
+                    text = "", //TODO
+                    style = MaterialTheme.typography.bodyMedium
+                )
+            }
         }
     }
 }
