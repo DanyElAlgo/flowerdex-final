@@ -53,10 +53,18 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.material.icons.filled.GridView
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Sort
+import androidx.compose.material3.Button
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.draw.drawWithCache
+import androidx.compose.ui.geometry.toRect
+import androidx.compose.ui.graphics.BlendMode
+import androidx.compose.ui.graphics.Paint
+import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
+import androidx.compose.ui.text.style.TextAlign
+import androidx.core.graphics.toRect
 import java.time.Instant
 
 
@@ -320,15 +328,45 @@ fun IndexPage(modifier: Modifier = Modifier) {
     var isListView by remember { mutableStateOf(true) }
 //    Validar que la base tenga datos, caso contrario, mostrar mensaje de "No hay datos"
     if (flowerDatabaseEmpty.isEmpty()) {
-        Box(
+        Column(
             modifier = modifier
                 .fillMaxSize(),
-            contentAlignment = Alignment.Center
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = "No hay flores en la base de datos.",
-                style = MaterialTheme.typography.bodyLarge
+                text = "No hay flores registradas.\nEmpieza a capturar flores para\nllenar la enciclopedia.",
+                style = MaterialTheme.typography.titleLarge,
+                textAlign = TextAlign.Center
             )
+            Image(
+                painter = painterResource(id = R.drawable.placeholder),
+                contentDescription = "Imagen",
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .size(150.dp)
+                    .drawWithCache {
+                        val paint = Paint().apply {
+                            blendMode = BlendMode.Multiply
+                        }
+                        onDrawWithContent {
+                            drawIntoCanvas { canvas ->
+                                canvas.saveLayer(size.toRect(), paint)
+                                drawContent()
+                                canvas.restore()
+                            }
+                        }
+                    }
+            )
+            Button(onClick = { /*TODO*/ }) {
+                Image(
+                    painter = painterResource(id = R.drawable.photo_camera_24dp_e3e3e3_fill0_wght400_grad0_opsz24),
+                    contentDescription = "Agregar flor",
+                    modifier = Modifier.size(24.dp)
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(text = "Agregar flor")
+            }
         }
         return
     }
