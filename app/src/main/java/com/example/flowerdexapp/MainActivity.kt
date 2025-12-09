@@ -50,6 +50,13 @@ import androidx.compose.ui.unit.dp
 import com.example.flowerdexapp.ui.theme.FlowerdexAppTheme
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.windowInsetsBottomHeight
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.filled.GridView
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Sort
@@ -232,7 +239,7 @@ var flowerDatabaseEmpty = listOf<Flor>()
 @Composable
 fun SmallTopAppBarExample(modifier: Modifier = Modifier) {
     Scaffold(
-        modifier = modifier,
+        modifier = modifier.fillMaxSize(),
         topBar = {
             TopAppBar(
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -257,7 +264,7 @@ fun SmallTopAppBarExample(modifier: Modifier = Modifier) {
             )
         },
     ) { innerPadding ->
-        FlowerPage(modifier = Modifier.padding(innerPadding))
+        FlowerPage(modifier = Modifier.padding(top = innerPadding.calculateTopPadding()))
     }
 }
 
@@ -424,7 +431,10 @@ fun IndexPage(modifier: Modifier = Modifier) {
 fun FlowerPage(modifier: Modifier = Modifier) {
     // Página de detalles de la flor
     var flor = flowerDatabase[0] // Ejemplo: tomar la primera flor
-    Column(modifier = modifier) {
+    var scrollState = rememberScrollState()
+    Column(modifier = modifier
+        .fillMaxSize()
+        .verticalScroll(scrollState)) {
         Image(
             painter = painterResource(id = R.drawable.placeholder),
             contentDescription = "Imagen de la flor",
