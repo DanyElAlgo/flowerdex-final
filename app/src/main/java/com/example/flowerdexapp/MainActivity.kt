@@ -424,7 +424,7 @@ fun IndexPage(modifier: Modifier = Modifier) {
 fun FlowerPage(modifier: Modifier = Modifier) {
     // Página de detalles de la flor
     var flor = flowerDatabase[0] // Ejemplo: tomar la primera flor
-    Column(modifier = modifier.padding(16.dp)) {
+    Column(modifier = modifier) {
         Image(
             painter = painterResource(id = R.drawable.placeholder),
             contentDescription = "Imagen de la flor",
@@ -436,71 +436,77 @@ fun FlowerPage(modifier: Modifier = Modifier) {
         )
         Spacer(modifier = Modifier.size(16.dp))
         Column(modifier = Modifier.padding(start = 16.dp)) {
-            Text(
-                text = flor.nombreComun,
-                style = MaterialTheme.typography.bodyLarge
-            )
-            Text(
-                text = flor.nombreCientifico,
-                style = MaterialTheme.typography.bodyMedium
-            )
-            Text(
-                text = "Fecha obtención: ${flor.fechaAvistamiento ?: "Desconocida"}",
-                style = MaterialTheme.typography.bodySmall
-            )
-        }
-        Text(
-            text = "Descripción general:",
-            style = MaterialTheme.typography.headlineSmall,
-        )
-        Text(
-            text = flor.descripcion ?: "Descripción no disponible.",
-            style = MaterialTheme.typography.bodyMedium,
-        )
-        Text(
-            text = "Información adicional:",
-            style = MaterialTheme.typography.headlineSmall,
-        )
-        Column(modifier = Modifier.padding(start = 16.dp)) {
-            Column(modifier = Modifier.padding(start = 16.dp)) {
+            Column(){
                 Text(
-                    text = "Familia:",
-                    style = MaterialTheme.typography.bodyLarge
+                    text = flor.nombreComun,
+                    style = MaterialTheme.typography.headlineMedium
                 )
                 Text(
-                    text = flor.familia,
-                    style = MaterialTheme.typography.bodyMedium
+                    text = flor.nombreCientifico,
+                    style = MaterialTheme.typography.titleMedium
+                )
+                Text(
+                    text = "Fecha obtención: ${flor.fechaAvistamiento ?: "Desconocida"}",
+                    style = MaterialTheme.typography.labelSmall
                 )
             }
-            Column(modifier = Modifier.padding(start = 16.dp)) {
-                Text(
-                    text = "Temporada:",
-                    style = MaterialTheme.typography.bodyLarge
-                )
-                Text(
-                    text = "", //TODO
-                    style = MaterialTheme.typography.bodyMedium
-                )
-            }
-            Column(modifier = Modifier.padding(start = 16.dp)) {
-                Text(
-                    text = "Exposición al sol preferida:",
-                    style = MaterialTheme.typography.bodyLarge
-                )
-                Text(
-                    text = "flor.exposicionSolar", //TODO
-                    style = MaterialTheme.typography.bodyMedium
-                )
-            }
-            Column(modifier = Modifier.padding(start = 16.dp)) {
-                Text(
-                    text = "Alcalinidad preferida:",
-                    style = MaterialTheme.typography.bodyLarge
-                )
-                Text(
-                    text = "", //TODO
-                    style = MaterialTheme.typography.bodyMedium
-                )
+            Spacer(modifier = Modifier.size(8.dp))
+            Text(
+                text = "Descripción general:",
+                style = MaterialTheme.typography.headlineSmall,
+            )
+            Spacer(modifier = Modifier.size(8.dp))
+            Text(
+                text = flor.descripcion ?: "Descripción no disponible.",
+                style = MaterialTheme.typography.bodyMedium,
+            )
+            Spacer(modifier = Modifier.size(8.dp))
+            Text(
+                text = "Información adicional:",
+                style = MaterialTheme.typography.headlineSmall,
+            )
+            Spacer(modifier = Modifier.size(8.dp))
+            Column() {
+                Column(modifier = Modifier.padding(vertical = 8.dp)) {
+                    Text(
+                        text = "Familia:",
+                        style = MaterialTheme.typography.bodyLarge
+                    )
+                    Text(
+                        text = flor.familia,
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                }
+                Column(modifier = Modifier.padding(vertical = 8.dp)) {
+                    Text(
+                        text = "Temporada:",
+                        style = MaterialTheme.typography.bodyLarge
+                    )
+                    Text(
+                        text = "Desconocida", //TODO
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                }
+                Column(modifier = Modifier.padding(vertical = 8.dp)) {
+                    Text(
+                        text = "Exposición al sol preferida:",
+                        style = MaterialTheme.typography.bodyLarge
+                    )
+                    Text(
+                        text = "flor.exposicionSolar", //TODO
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                }
+                Column(modifier = Modifier.padding(vertical = 8.dp)) {
+                    Text(
+                        text = "Alcalinidad preferida:",
+                        style = MaterialTheme.typography.bodyLarge
+                    )
+                    Text(
+                        text = "Desconocida", //TODO
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                }
             }
         }
     }
