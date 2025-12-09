@@ -57,6 +57,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import java.time.Instant
 
 
 class MainActivity : ComponentActivity() {
@@ -95,10 +96,128 @@ data class Flor(
     val fechaAvistamiento: Long? = null,
     val fotoUri: String? = null
 )
-
 enum class TipoExposicion {
     SOL_DIRECTO, SEMI_SOMBRA, SOMBRA_TOTAL
 }
+
+//Base de datos de ejemplo, contiene solo 10 flores
+var flowerDatabase = listOf(
+    Flor(
+        id = 1,
+        nombreCientifico = "Rosa gallica",
+        nombreComun = "Rosa de Castilla",
+        familia = "Rosaceae",
+        exposicionSolar = TipoExposicion.SOL_DIRECTO,
+        frecuenciaRiego = 5,
+        temperaturaMinima = -15.0,
+        colores = listOf("Rojo", "Rosa", "Blanco"),
+        esToxica = false,
+        // Ejemplo de datos de usuario (opcional)
+        fechaAvistamiento = Instant.parse("2024-10-20T10:00:00Z").epochSecond
+    ),
+    Flor(
+        id = 2,
+        nombreCientifico = "Lavandula angustifolia",
+        nombreComun = "Lavanda",
+        familia = "Lamiaceae",
+        exposicionSolar = TipoExposicion.SOL_DIRECTO,
+        frecuenciaRiego = 10,
+        temperaturaMinima = -10.0,
+        colores = listOf("Morado", "Azul"),
+        esToxica = false
+    ),
+    Flor(
+        id = 3,
+        nombreCientifico = "Ficus lyrata",
+        nombreComun = "Higuera Hoja de Violín",
+        familia = "Moraceae",
+        exposicionSolar = TipoExposicion.SEMI_SOMBRA,
+        frecuenciaRiego = 7,
+        temperaturaMinima = 10.0,
+        colores = listOf("Verde"),
+        esToxica = true
+    ),
+    Flor(
+        id = 4,
+        nombreCientifico = "Orchis mascula",
+        nombreComun = "Orquídea Macho",
+        familia = "Orchidaceae",
+        exposicionSolar = TipoExposicion.SEMI_SOMBRA,
+        frecuenciaRiego = 4,
+        temperaturaMinima = 5.0,
+        colores = listOf("Púrpura", "Rosa"),
+        esToxica = false
+    ),
+    Flor(
+        id = 5,
+        nombreCientifico = "Monstera deliciosa",
+        nombreComun = "Costilla de Adán",
+        familia = "Araceae",
+        exposicionSolar = TipoExposicion.SEMI_SOMBRA,
+        frecuenciaRiego = 8,
+        temperaturaMinima = 15.0,
+        colores = listOf("Verde", "Blanco"),
+        esToxica = true
+    ),
+    Flor(
+        id = 6,
+        nombreCientifico = "Viola tricolor",
+        nombreComun = "Pensamiento Silvestre",
+        familia = "Violaceae",
+        exposicionSolar = TipoExposicion.SOL_DIRECTO,
+        frecuenciaRiego = 5,
+        temperaturaMinima = -5.0,
+        colores = listOf("Púrpura", "Amarillo", "Blanco"),
+        esToxica = false
+    ),
+    Flor(
+        id = 7,
+        nombreCientifico = "Spathiphyllum wallisii",
+        nombreComun = "Espatifilo",
+        familia = "Araceae",
+        exposicionSolar = TipoExposicion.SOMBRA_TOTAL,
+        frecuenciaRiego = 3,
+        temperaturaMinima = 18.0,
+        colores = listOf("Blanco", "Verde"),
+        esToxica = true
+    ),
+    Flor(
+        id = 8,
+        nombreCientifico = "Tulipa gesneriana",
+        nombreComun = "Tulipán",
+        familia = "Liliaceae",
+        exposicionSolar = TipoExposicion.SOL_DIRECTO,
+        frecuenciaRiego = 6,
+        temperaturaMinima = -20.0,
+        colores = listOf("Rojo", "Amarillo", "Rosa", "Púrpura"),
+        esToxica = false
+    ),
+    Flor(
+        id = 9,
+        nombreCientifico = "Saintpaulia ionantha",
+        nombreComun = "Violeta Africana",
+        familia = "Gesneriaceae",
+        exposicionSolar = TipoExposicion.SOMBRA_TOTAL,
+        frecuenciaRiego = 5,
+        temperaturaMinima = 16.0,
+        colores = listOf("Violeta", "Azul", "Rosa", "Blanco"),
+        esToxica = false
+    ),
+    Flor(
+        id = 10,
+        nombreCientifico = "Dianthus caryophyllus",
+        nombreComun = "Clavel",
+        familia = "Caryophyllaceae",
+        exposicionSolar = TipoExposicion.SOL_DIRECTO,
+        frecuenciaRiego = 7,
+        temperaturaMinima = 0.0,
+        colores = listOf("Rojo", "Rosa", "Blanco", "Amarillo"),
+        esToxica = false
+    )
+)
+
+//Base de datos vacía para pruebas
+var flowerDatabaseEmpty = listOf<Flor>()
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -199,6 +318,20 @@ fun FlowerBlockItem(flower: Flor, modifier: Modifier = Modifier) {
 @Composable
 fun IndexPage(modifier: Modifier = Modifier) {
     var isListView by remember { mutableStateOf(true) }
+//    Validar que la base tenga datos, caso contrario, mostrar mensaje de "No hay datos"
+    if (flowerDatabaseEmpty.isEmpty()) {
+        Box(
+            modifier = modifier
+                .fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = "No hay flores en la base de datos.",
+                style = MaterialTheme.typography.bodyLarge
+            )
+        }
+        return
+    }
 
     Column(modifier = modifier) {
         Row(
@@ -236,30 +369,14 @@ fun IndexPage(modifier: Modifier = Modifier) {
                 )
             }
         }
-
-        LazyColumn(
-            modifier = Modifier.fillMaxSize()
-        ) {
-            items(10) { index ->
-                if (isListView) {
-                    FlowerListItem(
-                        flower = Flor(
-                            id = index.toLong(),
-                            nombreCientifico = "Flor $index",
-                            nombreComun = "Flor Común $index",
-                            familia = "Familia $index",
-                            exposicionSolar = TipoExposicion.SOL_DIRECTO,
-                            frecuenciaRiego = 7,
-                            temperaturaMinima = 15.0,
-                            colores = listOf("Rojo", "Verde"),
-                            esToxica = false
-                        )
-                    )
-                } else {
-                    // TODO: Implementar FlowerBlockItem
-                    Text("Block View Item $index", modifier = Modifier.padding(16.dp))
+        if (isListView) {
+            LazyColumn {
+                items(flowerDatabase.size) { index ->
+                    FlowerListItem(flower = flowerDatabase[index])
                 }
             }
+        } else {
+            // Implementar vista de bloques aquí
         }
     }
 }
