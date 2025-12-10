@@ -26,11 +26,18 @@ import com.example.flowerdexapp.R
 
 @Composable
 fun FlowerPage(
-    viewModel: FlowerViewModel, //TODO: Arreglar la instancia del viewmodel, debe tomar una sola flor, no toda la base de datos xd
+    flowerId: Long,
+    viewModel: FlowerViewModel,
     modifier: Modifier = Modifier
 ) {
-    val listaFlores by viewModel.flores.collectAsState(initial = emptyList())
-    var flor = listaFlores[0] // Ejemplo: tomar la primera flor
+    val florState by viewModel.obtenerFlor(flowerId).collectAsState(initial = null)
+    val flor = florState
+
+    if (flor == null) {
+//        TODO: Mejorar la pantalla de cargado
+        Text("Cargando...", modifier = modifier.padding(16.dp))
+        return
+    }
     var scrollState = rememberScrollState()
     Column(modifier = modifier
         .fillMaxSize()
@@ -55,7 +62,7 @@ fun FlowerPage(
                     text = flor.nombreCientifico,
                     style = MaterialTheme.typography.titleMedium
                 )
-                Text(
+                Text( // TODO: Obtener solo el DD/MM/AAAA de la variable fechaAvistameinto
                     text = "Fecha obtención: ${flor.fechaAvistamiento ?: "Desconocida"}",
                     style = MaterialTheme.typography.labelSmall
                 )
@@ -89,11 +96,11 @@ fun FlowerPage(
                 }
                 Column(modifier = Modifier.padding(vertical = 8.dp)) {
                     Text(
-                        text = "Temporada:",
+                        text = "Estación preferida:",
                         style = MaterialTheme.typography.bodyLarge
                     )
                     Text(
-                        text = "Desconocida", //TODO
+                        text = flor.estacionPreferida.descripcion,
                         style = MaterialTheme.typography.bodyMedium
                     )
                 }
@@ -103,7 +110,7 @@ fun FlowerPage(
                         style = MaterialTheme.typography.bodyLarge
                     )
                     Text(
-                        text = "flor.exposicionSolar", //TODO
+                        text = flor.exposicionSolar.descripcion,
                         style = MaterialTheme.typography.bodyMedium
                     )
                 }
@@ -113,7 +120,7 @@ fun FlowerPage(
                         style = MaterialTheme.typography.bodyLarge
                     )
                     Text(
-                        text = "Desconocida", //TODO
+                        text = flor.alcalinidadPreferida,
                         style = MaterialTheme.typography.bodyMedium
                     )
                 }

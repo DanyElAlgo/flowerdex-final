@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.flowerdexapp.data.Flor
 import com.example.flowerdexapp.data.FlorDao
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
@@ -19,6 +20,9 @@ class FlowerViewModel(private val dao: FlorDao) : ViewModel() {
         viewModelScope.launch {
             dao.insertar(flor)
         }
+    }
+    fun obtenerFlor(id: Long): Flow<Flor?> {
+        return dao.obtenerFlorPorId(id)
     }
 }
 
