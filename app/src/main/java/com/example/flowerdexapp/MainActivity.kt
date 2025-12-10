@@ -34,6 +34,7 @@ import com.example.flowerdexapp.ui.FlowerViewModelFactory
 import com.example.flowerdexapp.ui.HomePage
 import com.example.flowerdexapp.ui.IndexPage
 import com.example.flowerdexapp.ui.RegisterPage
+import com.example.flowerdexapp.ui.VerifyPage
 import com.example.flowerdexapp.ui.theme.FlowerdexAppTheme
 
 sealed class Screen(val route: String){
