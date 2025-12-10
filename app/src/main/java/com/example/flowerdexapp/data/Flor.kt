@@ -32,10 +32,11 @@ enum class TipoEstacion(val descripcion: String) {
     PRIMAVERA("Primavera"),
     VERANO("Verano"),
     OTOÑO("Otoño"),
-    INVIERNO("Invierno")
+    INVIERNO("Invierno"),
+    NINGUNA("Ninguna en particular")
 }
 enum class TipoColor(val descripcion: String) {
-    ROJO("Rojo"), 
+    ROJO("Rojo"),
     MARRON("Marron"),
     NARANJA("Naranja"),
     AMARILLO("Amarillo"),
