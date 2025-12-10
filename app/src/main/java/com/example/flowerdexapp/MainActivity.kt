@@ -73,7 +73,8 @@ import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.text.style.TextAlign
 import androidx.core.graphics.toRect
 import java.time.Instant
-
+import com.example.flowerdexapp.data.Flor
+import androidx.compose.runtime.collectAsState
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -90,65 +91,6 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
-
-//Métodó de guardado, se moverá a otros archivos más adelante
-data class Flor(
-    val id: Long = 0,
-    val nombreCientifico: String,
-    val nombreComun: String,
-    val familia: String,
-    val descripcion: String? = null,
-
-    // Requisitos Ambientales
-    val exposicionSolar: TipoExposicion,
-    val frecuenciaRiego: Int, // Días entre riegos
-    val estacionPreferida: TipoEstacion,
-    val alcalinidadPreferida: String,
-
-    // Otros datos de importancia
-    val colores: List<TipoColor>,
-    val esToxica: Boolean,
-
-    // Datos del Usuario
-    val fechaAvistamiento: Long? = null,
-    val fotoUri: String? = null
-)
-enum class TipoExposicion(
-    val descripcion: String
-) {
-    SOL_DIRECTO("Sol directo"),
-    SEMI_SOMBRA("Semi sombra"),
-    SOMBRA_TOTAL("Sombra total")
-}
-
-enum class TipoEstacion(
-    val descripcion: String
-) {
-    PRIMAVERA("Primavera"),
-    VERANO("Verano"),
-    OTOÑO("Otoño"),
-    INVIERNO("Invierno")
-}
-
-enum class TipoColor(
-    val descripcion: String
-) {
-    ROJO("Rojo"),
-    MARRON("Marron"),
-    NARANJA("Naranja"),
-    AMARILLO("Amarillo"),
-    VERDE("Verde"),
-    CELESTE("Celeste"),
-    AZUL("Azul"),
-    VIOLETA("Violeta"),
-    ROSADO("Rosado"),
-    GRIS("Gris"),
-    BLANCO("Blanco"),
-}
-
-var flowerDatabase = listOf<Flor>()
-//Base de datos vacía para pruebas
-var flowerDatabaseEmpty = listOf<Flor>()
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -244,102 +186,6 @@ fun FlowerListItem(flower: Flor, modifier: Modifier = Modifier) {
 }
 fun FlowerBlockItem(flower: Flor, modifier: Modifier = Modifier) {
     // Aquí se definirá el diseño del bloque de cada flor
-}
-
-@Composable
-fun IndexPage(modifier: Modifier = Modifier) {
-    var isListView by remember { mutableStateOf(true) }
-//    Validar que la base tenga datos, caso contrario, mostrar mensaje de "No hay datos"
-    if (flowerDatabaseEmpty.isEmpty()) {
-        Column(
-            modifier = modifier
-                .fillMaxSize(),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(
-                text = "No hay flores registradas.\nEmpieza a capturar flores para\nllenar la enciclopedia.",
-                style = MaterialTheme.typography.titleLarge,
-                textAlign = TextAlign.Center
-            )
-            Image(
-                painter = painterResource(id = R.drawable.placeholder),
-                contentDescription = "Imagen",
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .size(150.dp)
-                    .drawWithCache {
-                        val paint = Paint().apply {
-                            blendMode = BlendMode.Multiply
-                        }
-                        onDrawWithContent {
-                            drawIntoCanvas { canvas ->
-                                canvas.saveLayer(size.toRect(), paint)
-                                drawContent()
-                                canvas.restore()
-                            }
-                        }
-                    }
-            )
-            Button(onClick = { /*TODO*/ }) {
-                Image(
-                    painter = painterResource(id = R.drawable.photo_camera_24dp_e3e3e3_fill0_wght400_grad0_opsz24),
-                    contentDescription = "Agregar flor",
-                    modifier = Modifier.size(24.dp)
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(text = "Agregar flor")
-            }
-        }
-        return
-    }
-
-    Column(modifier = modifier) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 8.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Row(
-                modifier = Modifier
-                    .clip(RoundedCornerShape(8.dp))
-                    .clickable { /* TODO: Open Sort Dialog */ }
-                    .padding(8.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Sort,
-                    contentDescription = "Sort",
-                    tint = MaterialTheme.colorScheme.primary
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(
-                    text = "Ordenar",
-                    style = MaterialTheme.typography.labelLarge,
-                    color = MaterialTheme.colorScheme.primary
-                )
-            }
-
-            IconButton(onClick = { isListView = !isListView }) {
-                Icon(
-                    imageVector = if (isListView) Icons.Default.GridView else Icons.Default.List,
-                    contentDescription = "Switch View",
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
-        }
-        if (isListView) {
-            LazyColumn {
-                items(flowerDatabase.size) { index ->
-                    FlowerListItem(flower = flowerDatabase[index])
-                }
-            }
-        } else {
-            // Implementar vista de bloques aquí
-        }
-    }
 }
 
 @Composable
