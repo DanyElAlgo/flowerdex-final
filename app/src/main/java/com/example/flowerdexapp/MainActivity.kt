@@ -157,7 +157,7 @@ fun MainNavigationWrapper(viewModel: FlowerViewModel) {
     ) { innerPadding ->
         NavHost(
             navController = navController,
-            startDestination = Screen.Home.route,
+            startDestination = Screen.Index.route,
             modifier = Modifier.padding(innerPadding)
         ) {
             // RUTA 1: Lista de Flores (Index)
