@@ -131,20 +131,30 @@ fun MainNavigationWrapper(viewModel: FlowerViewModel) {
             composable(
                 route = Screen.Home.route
             ) {
-                HomePage() //TODO
+                HomePage(
+                    onRegisterClick = { navController.navigate(Screen.Register.route) },
+                    onIndexClick = { navController.navigate(Screen.Index.route) }
+                )
             }
 
             // RUTA 4: Registro de nueva flor (Register)
             composable(
                 route = Screen.Register.route
             ) {
-                RegisterPage() //TODO
+                RegisterPage(
+                    onBackClick = { navController.popBackStack() },
+                    onScanClick = { navController.navigate(Screen.Verify.route) }
+                ) //TODO
             }
 
             // RUTA 5: Verificación de nueva flor (Verify)
             composable(
                 route = Screen.Verify.route
             ) {
+                VerifyPage(
+                    onBackClick = { navController.popBackStack() },
+                    onSaveClick = { navController.navigate(Screen.Index.route) }
+                )
                 //TODO
             }
         }

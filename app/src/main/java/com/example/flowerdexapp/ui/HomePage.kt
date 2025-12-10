@@ -21,7 +21,11 @@ import com.example.flowerdexapp.data.TipoEstacion
 import com.example.flowerdexapp.data.TipoExposicion
 
 @Composable
-fun HomePage(){
+fun HomePage(
+    onRegisterClick: () -> Unit,
+    onIndexClick: () -> Unit,
+    modifier: Modifier = Modifier
+){
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
@@ -33,7 +37,7 @@ fun HomePage(){
         Column(){ //Botones de redirección
             Button(onClick = {
                 // TODO: Redirigir a la página de registro
-
+                    onRegisterClick()
             }) {
                 Image(
                     painter = painterResource(id = R.drawable.photo_camera_24dp_e3e3e3_fill0_wght400_grad0_opsz24),
@@ -45,7 +49,7 @@ fun HomePage(){
             }
             Button(onClick = {
                 // TODO: Redirigir a la página de enciclopedia
-
+                    onIndexClick()
             }) {
                 Image(
                     painter = painterResource(id = R.drawable.photo_camera_24dp_e3e3e3_fill0_wght400_grad0_opsz24),
