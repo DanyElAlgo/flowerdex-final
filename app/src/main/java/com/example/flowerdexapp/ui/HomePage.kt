@@ -22,10 +22,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.flowerdexapp.R
-import com.example.flowerdexapp.data.Flor
-import com.example.flowerdexapp.data.TipoColor
-import com.example.flowerdexapp.data.TipoEstacion
-import com.example.flowerdexapp.data.TipoExposicion
 
 @Composable
 fun HomePage(
@@ -64,7 +60,7 @@ fun HomePage(
                     .height(60.dp)
             ) {
                 Image(
-                    painter = painterResource(id = R.drawable.photo_camera_24dp_e3e3e3_fill0_wght400_grad0_opsz24),
+                    painter = painterResource(id = R.drawable.photo_camera),
                     contentDescription = "Registrar",
                     modifier = Modifier.size(28.dp)
                 )
@@ -82,7 +78,7 @@ fun HomePage(
                     .height(60.dp)
             ) {
                 Image(
-                    painter = painterResource(id = R.drawable.menu_book_24dp_e3e3e3_fill0_wght400_grad0_opsz24),
+                    painter = painterResource(id = R.drawable.menu_book),
                     contentDescription = "Enciclopedia",
                     modifier = Modifier.size(28.dp)
                 )

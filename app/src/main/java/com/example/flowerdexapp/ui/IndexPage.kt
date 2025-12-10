@@ -1,7 +1,5 @@
 package com.example.flowerdexapp.ui
 
-import android.widget.GridLayout
-import android.widget.GridView
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -49,7 +47,6 @@ import com.example.flowerdexapp.data.Flor
 import com.example.flowerdexapp.data.TipoColor
 import com.example.flowerdexapp.data.TipoEstacion
 import com.example.flowerdexapp.data.TipoExposicion
-import kotlin.collections.get
 
 @Composable
 fun IndexPage(
@@ -106,7 +103,7 @@ fun IndexPage(
                 viewModel.agregarFlor(florPrueba)
             }) {
                 Image(
-                    painter = painterResource(id = R.drawable.photo_camera_24dp_e3e3e3_fill0_wght400_grad0_opsz24),
+                    painter = painterResource(id = R.drawable.photo_camera),
                     contentDescription = "Agregar flor",
                     modifier = Modifier.size(24.dp)
                 )
@@ -188,7 +185,7 @@ fun IndexPage(
             viewModel.agregarFlor(florPrueba)
         }) {
             Image(
-                painter = painterResource(id = R.drawable.photo_camera_24dp_e3e3e3_fill0_wght400_grad0_opsz24),
+                painter = painterResource(id = R.drawable.photo_camera),
                 contentDescription = "Agregar flor (DEBUG)",
                 modifier = Modifier.size(24.dp)
             )
