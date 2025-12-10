@@ -96,7 +96,7 @@ fun FlowerBlockItem(flower: Flor,
     modifier: Modifier = Modifier
 ) {
     Column(){
-        ImageExample(modifier = Modifier.width(56.dp))
+        ImageExample(modifier = Modifier.width(120.dp))
         Text(
             text = flower.nombreComun,
             style = MaterialTheme.typography.bodyLarge
