@@ -41,6 +41,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.flowerdexapp.R
+import com.example.flowerdexapp.data.Flor
+import com.example.flowerdexapp.data.TipoColor
+import com.example.flowerdexapp.data.TipoEstacion
+import com.example.flowerdexapp.data.TipoExposicion
 import kotlin.collections.get
 
 @Composable
@@ -82,7 +86,21 @@ fun IndexPage(
                         }
                     }
             )
-            Button(onClick = { /*TODO*/ }) {
+            Button(onClick = {
+                // Crear una flor de prueba por el momento
+                val florPrueba = Flor(
+                    nombreCientifico = "Rosa",
+                    nombreComun = "Rosa común",
+                    familia = "Rosáceas",
+                    exposicionSolar = TipoExposicion.SOL_DIRECTO,
+                    frecuenciaRiego = 1,
+                    estacionPreferida = TipoEstacion.PRIMAVERA,
+                    alcalinidadPreferida = "Media",
+                    colores = listOf(TipoColor.ROJO, TipoColor.AMARILLO),
+                    esToxica = false
+                )
+                viewModel.agregarFlor(florPrueba)
+            }) {
                 Image(
                     painter = painterResource(id = R.drawable.photo_camera_24dp_e3e3e3_fill0_wght400_grad0_opsz24),
                     contentDescription = "Agregar flor",
