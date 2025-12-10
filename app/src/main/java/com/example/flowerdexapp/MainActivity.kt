@@ -75,15 +75,27 @@ import androidx.core.graphics.toRect
 import java.time.Instant
 import com.example.flowerdexapp.data.Flor
 import androidx.compose.runtime.collectAsState
+import com.example.flowerdexapp.data.AppDatabase
+import com.example.flowerdexapp.ui.FlowerViewModel
+import com.example.flowerdexapp.ui.FlowerViewModelFactory
+import com.example.flowerdexapp.ui.IndexPage
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
+        val database = AppDatabase.getDatabase(applicationContext)
+        val viewModelFactory = FlowerViewModelFactory(database.florDao())
+
         setContent {
             FlowerdexAppTheme {
+                val viewModel: FlowerViewModel = androidx.lifecycle.viewmodel.compose.viewModel(
+                    factory = viewModelFactory
+                )
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     SmallTopAppBarExample(
+                        viewModel = viewModel,
                         modifier = Modifier.padding(innerPadding)
                     )
                 }
@@ -94,7 +106,10 @@ class MainActivity : ComponentActivity() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SmallTopAppBarExample(modifier: Modifier = Modifier) {
+fun SmallTopAppBarExample(
+    viewModel: FlowerViewModel,
+    modifier: Modifier = Modifier
+) {
     Scaffold(
         modifier = modifier.fillMaxSize(),
         topBar = {
@@ -121,173 +136,18 @@ fun SmallTopAppBarExample(modifier: Modifier = Modifier) {
             )
         },
     ) { innerPadding ->
-        IndexPage(modifier = Modifier.padding(top = innerPadding.calculateTopPadding()))
-    }
-}
-
-@Composable
-fun ImageExample(
-    modifier: Modifier = Modifier,
-    sizeDp: Int = 200,
-    borderWidthDp: Int = 2
-) {
-    val shape = RoundedCornerShape(12.dp)
-    Box(
-        modifier = modifier
-            .fillMaxWidth()
-            .aspectRatio(1f),
-        contentAlignment = Alignment.Center
-    ) {
-        Box(
-            modifier = Modifier
-                .size(sizeDp.dp)
-                .clip(shape)
-        ) {
-            Image(
-                painter = painterResource(id = R.drawable.placeholder),
-                contentDescription = "Imagen",
-                contentScale = ContentScale.Crop,
-                modifier = Modifier.matchParentSize()
-            )
-            Box(
-                modifier = Modifier
-                    .matchParentSize()
-                    .border(borderWidthDp.dp, Color.Black, shape)
-            )
-        }
-    }
-}
-
-@Composable
-fun FlowerListItem(flower: Flor, modifier: Modifier = Modifier) {
-    Column(modifier = modifier) {
-        // datos de la flor
-        Row(modifier = Modifier.padding(16.dp)) {
-            ImageExample(modifier = Modifier.width(56.dp))
-            Column(modifier = Modifier.padding(start = 16.dp)) {
-                Text(
-                    text = flower.nombreComun,
-                    style = MaterialTheme.typography.bodyLarge
-                )
-                Text(
-                    text = flower.nombreCientifico,
-                    style = MaterialTheme.typography.bodyMedium
-                )
-                Text(
-                    text = "Fecha obtención: ${flower.fechaAvistamiento ?: "Desconocida"}",
-                    style = MaterialTheme.typography.bodySmall
-                )
-            }
-        }
-        // linea divisoria
-        HorizontalDivider(thickness = 2.dp)
-    }
-
-}
-fun FlowerBlockItem(flower: Flor, modifier: Modifier = Modifier) {
-    // Aquí se definirá el diseño del bloque de cada flor
-}
-
-@Composable
-fun FlowerPage(modifier: Modifier = Modifier) {
-    // Página de detalles de la flor
-    var flor = flowerDatabase[0] // Ejemplo: tomar la primera flor
-    var scrollState = rememberScrollState()
-    Column(modifier = modifier
-        .fillMaxSize()
-        .verticalScroll(scrollState)) {
-        Image(
-            painter = painterResource(id = R.drawable.placeholder),
-            contentDescription = "Imagen de la flor",
-            contentScale = ContentScale.Crop,
-            modifier = Modifier
-                .fillMaxWidth()
-                .aspectRatio(1f)
-                .clip(RoundedCornerShape(12.dp))
+        IndexPage(
+            viewModel = viewModel,
+            modifier = Modifier.padding(top = innerPadding.calculateTopPadding())
         )
-        Spacer(modifier = Modifier.size(16.dp))
-        Column(modifier = Modifier.padding(start = 16.dp)) {
-            Column(){
-                Text(
-                    text = flor.nombreComun,
-                    style = MaterialTheme.typography.headlineMedium
-                )
-                Text(
-                    text = flor.nombreCientifico,
-                    style = MaterialTheme.typography.titleMedium
-                )
-                Text(
-                    text = "Fecha obtención: ${flor.fechaAvistamiento ?: "Desconocida"}",
-                    style = MaterialTheme.typography.labelSmall
-                )
-            }
-            Spacer(modifier = Modifier.size(8.dp))
-            Text(
-                text = "Descripción general:",
-                style = MaterialTheme.typography.headlineSmall,
-            )
-            Spacer(modifier = Modifier.size(8.dp))
-            Text(
-                text = flor.descripcion ?: "Descripción no disponible.",
-                style = MaterialTheme.typography.bodyMedium,
-            )
-            Spacer(modifier = Modifier.size(8.dp))
-            Text(
-                text = "Información adicional:",
-                style = MaterialTheme.typography.headlineSmall,
-            )
-            Spacer(modifier = Modifier.size(8.dp))
-            Column() {
-                Column(modifier = Modifier.padding(vertical = 8.dp)) {
-                    Text(
-                        text = "Familia:",
-                        style = MaterialTheme.typography.bodyLarge
-                    )
-                    Text(
-                        text = flor.familia,
-                        style = MaterialTheme.typography.bodyMedium
-                    )
-                }
-                Column(modifier = Modifier.padding(vertical = 8.dp)) {
-                    Text(
-                        text = "Temporada:",
-                        style = MaterialTheme.typography.bodyLarge
-                    )
-                    Text(
-                        text = "Desconocida", //TODO
-                        style = MaterialTheme.typography.bodyMedium
-                    )
-                }
-                Column(modifier = Modifier.padding(vertical = 8.dp)) {
-                    Text(
-                        text = "Exposición al sol preferida:",
-                        style = MaterialTheme.typography.bodyLarge
-                    )
-                    Text(
-                        text = "flor.exposicionSolar", //TODO
-                        style = MaterialTheme.typography.bodyMedium
-                    )
-                }
-                Column(modifier = Modifier.padding(vertical = 8.dp)) {
-                    Text(
-                        text = "Alcalinidad preferida:",
-                        style = MaterialTheme.typography.bodyLarge
-                    )
-                    Text(
-                        text = "Desconocida", //TODO
-                        style = MaterialTheme.typography.bodyMedium
-                    )
-                }
-            }
-        }
     }
 }
-
 
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
     FlowerdexAppTheme {
-        SmallTopAppBarExample()
+        val viewModel: FlowerViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
+        SmallTopAppBarExample(viewModel = viewModel)
     }
 }
