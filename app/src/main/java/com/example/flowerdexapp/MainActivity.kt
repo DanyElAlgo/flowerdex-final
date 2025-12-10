@@ -28,6 +28,10 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.flowerdexapp.data.AppDatabase
+import com.example.flowerdexapp.data.Flor
+import com.example.flowerdexapp.data.TipoColor
+import com.example.flowerdexapp.data.TipoEstacion
+import com.example.flowerdexapp.data.TipoExposicion
 import com.example.flowerdexapp.ui.FlowerPage
 import com.example.flowerdexapp.ui.FlowerViewModel
 import com.example.flowerdexapp.ui.FlowerViewModelFactory
@@ -153,6 +157,17 @@ fun MainNavigationWrapper(viewModel: FlowerViewModel) {
                 route = Screen.Verify.route
             ) {
                 VerifyPage(
+                    datos = Flor(
+                        nombreCientifico = "Rosa",
+                nombreComun = "Rosa común",
+                familia = "Rosáceas",
+                exposicionSolar = TipoExposicion.SOL_DIRECTO,
+                frecuenciaRiego = 1,
+                estacionPreferida = TipoEstacion.PRIMAVERA,
+                alcalinidadPreferida = "Media",
+                colores = listOf(TipoColor.ROJO, TipoColor.AMARILLO),
+                esToxica = false
+                ),
                     onBackClick = { navController.popBackStack() },
                     onSaveClick = { navController.navigate(Screen.Index.route) }
                 )
