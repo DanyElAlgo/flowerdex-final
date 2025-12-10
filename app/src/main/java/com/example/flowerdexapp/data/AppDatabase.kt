@@ -7,7 +7,7 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 
 @Database(entities = [Flor::class], version = 1, exportSchema = false)
-@TypeConverters(Converters::class) // ¡Importante! Registrar los convertidores
+@TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun florDao(): FlorDao
 

@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface FlorDao {
     @Query("SELECT * FROM flores ORDER BY nombreComun ASC")
-    fun obtenerTodas(): Flow<List<Flor>> // Flow permite actualizaciones en tiempo real
+    fun obtenerTodas(): Flow<List<Flor>>
 
     @Query("SELECT * FROM flores WHERE id = :id")
     suspend fun obtenerPorId(id: Long): Flor?
