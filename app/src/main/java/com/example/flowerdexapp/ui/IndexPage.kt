@@ -298,7 +298,6 @@ fun IndexPagePreviewPopulated() {
         )
     )
 
-    // We pass the dummy list to see the list view
     IndexPageContent(
         listaFlores = dummyFlowers,
         onFlowerClick = {},
