@@ -102,136 +102,51 @@ data class Flor(
     // Requisitos Ambientales
     val exposicionSolar: TipoExposicion,
     val frecuenciaRiego: Int, // Días entre riegos
-    val temperaturaMinima: Double,
+    val estacionPreferida: TipoEstacion,
+    val alcalinidadPreferida: String,
 
-    // Características Visuales
-    val colores: List<String>,
+    // Otros datos de importancia
+    val colores: List<TipoColor>,
     val esToxica: Boolean,
 
     // Datos del Usuario
     val fechaAvistamiento: Long? = null,
     val fotoUri: String? = null
 )
-enum class TipoExposicion {
-    SOL_DIRECTO, SEMI_SOMBRA, SOMBRA_TOTAL
+enum class TipoExposicion(
+    val descripcion: String
+) {
+    SOL_DIRECTO("Sol directo"),
+    SEMI_SOMBRA("Semi sombra"),
+    SOMBRA_TOTAL("Sombra total")
 }
 
-//Base de datos de ejemplo, contiene solo 10 flores
-var flowerDatabase = listOf(
-    Flor(
-        id = 1,
-        nombreCientifico = "Rosa gallica",
-        nombreComun = "Rosa de Castilla",
-        familia = "Rosaceae",
-        exposicionSolar = TipoExposicion.SOL_DIRECTO,
-        frecuenciaRiego = 5,
-        temperaturaMinima = -15.0,
-        colores = listOf("Rojo", "Rosa", "Blanco"),
-        esToxica = false,
-        // Ejemplo de datos de usuario (opcional)
-        fechaAvistamiento = Instant.parse("2024-10-20T10:00:00Z").epochSecond
-    ),
-    Flor(
-        id = 2,
-        nombreCientifico = "Lavandula angustifolia",
-        nombreComun = "Lavanda",
-        familia = "Lamiaceae",
-        exposicionSolar = TipoExposicion.SOL_DIRECTO,
-        frecuenciaRiego = 10,
-        temperaturaMinima = -10.0,
-        colores = listOf("Morado", "Azul"),
-        esToxica = false
-    ),
-    Flor(
-        id = 3,
-        nombreCientifico = "Ficus lyrata",
-        nombreComun = "Higuera Hoja de Violín",
-        familia = "Moraceae",
-        exposicionSolar = TipoExposicion.SEMI_SOMBRA,
-        frecuenciaRiego = 7,
-        temperaturaMinima = 10.0,
-        colores = listOf("Verde"),
-        esToxica = true
-    ),
-    Flor(
-        id = 4,
-        nombreCientifico = "Orchis mascula",
-        nombreComun = "Orquídea Macho",
-        familia = "Orchidaceae",
-        exposicionSolar = TipoExposicion.SEMI_SOMBRA,
-        frecuenciaRiego = 4,
-        temperaturaMinima = 5.0,
-        colores = listOf("Púrpura", "Rosa"),
-        esToxica = false
-    ),
-    Flor(
-        id = 5,
-        nombreCientifico = "Monstera deliciosa",
-        nombreComun = "Costilla de Adán",
-        familia = "Araceae",
-        exposicionSolar = TipoExposicion.SEMI_SOMBRA,
-        frecuenciaRiego = 8,
-        temperaturaMinima = 15.0,
-        colores = listOf("Verde", "Blanco"),
-        esToxica = true
-    ),
-    Flor(
-        id = 6,
-        nombreCientifico = "Viola tricolor",
-        nombreComun = "Pensamiento Silvestre",
-        familia = "Violaceae",
-        exposicionSolar = TipoExposicion.SOL_DIRECTO,
-        frecuenciaRiego = 5,
-        temperaturaMinima = -5.0,
-        colores = listOf("Púrpura", "Amarillo", "Blanco"),
-        esToxica = false
-    ),
-    Flor(
-        id = 7,
-        nombreCientifico = "Spathiphyllum wallisii",
-        nombreComun = "Espatifilo",
-        familia = "Araceae",
-        exposicionSolar = TipoExposicion.SOMBRA_TOTAL,
-        frecuenciaRiego = 3,
-        temperaturaMinima = 18.0,
-        colores = listOf("Blanco", "Verde"),
-        esToxica = true
-    ),
-    Flor(
-        id = 8,
-        nombreCientifico = "Tulipa gesneriana",
-        nombreComun = "Tulipán",
-        familia = "Liliaceae",
-        exposicionSolar = TipoExposicion.SOL_DIRECTO,
-        frecuenciaRiego = 6,
-        temperaturaMinima = -20.0,
-        colores = listOf("Rojo", "Amarillo", "Rosa", "Púrpura"),
-        esToxica = false
-    ),
-    Flor(
-        id = 9,
-        nombreCientifico = "Saintpaulia ionantha",
-        nombreComun = "Violeta Africana",
-        familia = "Gesneriaceae",
-        exposicionSolar = TipoExposicion.SOMBRA_TOTAL,
-        frecuenciaRiego = 5,
-        temperaturaMinima = 16.0,
-        colores = listOf("Violeta", "Azul", "Rosa", "Blanco"),
-        esToxica = false
-    ),
-    Flor(
-        id = 10,
-        nombreCientifico = "Dianthus caryophyllus",
-        nombreComun = "Clavel",
-        familia = "Caryophyllaceae",
-        exposicionSolar = TipoExposicion.SOL_DIRECTO,
-        frecuenciaRiego = 7,
-        temperaturaMinima = 0.0,
-        colores = listOf("Rojo", "Rosa", "Blanco", "Amarillo"),
-        esToxica = false
-    )
-)
+enum class TipoEstacion(
+    val descripcion: String
+) {
+    PRIMAVERA("Primavera"),
+    VERANO("Verano"),
+    OTOÑO("Otoño"),
+    INVIERNO("Invierno")
+}
 
+enum class TipoColor(
+    val descripcion: String
+) {
+    ROJO("Rojo"),
+    MARRON("Marron"),
+    NARANJA("Naranja"),
+    AMARILLO("Amarillo"),
+    VERDE("Verde"),
+    CELESTE("Celeste"),
+    AZUL("Azul"),
+    VIOLETA("Violeta"),
+    ROSADO("Rosado"),
+    GRIS("Gris"),
+    BLANCO("Blanco"),
+}
+
+var flowerDatabase = listOf<Flor>()
 //Base de datos vacía para pruebas
 var flowerDatabaseEmpty = listOf<Flor>()
 
