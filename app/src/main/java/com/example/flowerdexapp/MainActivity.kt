@@ -179,7 +179,7 @@ fun SmallTopAppBarExample(modifier: Modifier = Modifier) {
             )
         },
     ) { innerPadding ->
-        FlowerPage(modifier = Modifier.padding(top = innerPadding.calculateTopPadding()))
+        IndexPage(modifier = Modifier.padding(top = innerPadding.calculateTopPadding()))
     }
 }
 
