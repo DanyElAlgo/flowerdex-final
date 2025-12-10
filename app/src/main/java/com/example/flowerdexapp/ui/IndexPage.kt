@@ -1,5 +1,7 @@
 package com.example.flowerdexapp.ui
 
+import android.widget.GridLayout
+import android.widget.GridView
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -12,6 +14,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.GridView
@@ -159,7 +163,37 @@ fun IndexPage(
                 }
             }
         } else {
-            // Implementar vista de bloques aquí
+            LazyHorizontalGrid(GridCells.Fixed(2)) {
+                items(listaFlores.size) { index ->
+                    FlowerBlockItem(
+                        flower = listaFlores[index],
+                        onClick = { onFlowerClick(listaFlores[index].id) }
+                    )
+                }
+            }
+        }
+        Button(onClick = { //DEBUG, TODO: ELIMINAR LUEGO
+            // Crear una flor de prueba por el momento
+            val florPrueba = Flor(
+                nombreCientifico = "Rosa",
+                nombreComun = "Rosa común",
+                familia = "Rosáceas",
+                exposicionSolar = TipoExposicion.SOL_DIRECTO,
+                frecuenciaRiego = 1,
+                estacionPreferida = TipoEstacion.PRIMAVERA,
+                alcalinidadPreferida = "Media",
+                colores = listOf(TipoColor.ROJO, TipoColor.AMARILLO),
+                esToxica = false
+            )
+            viewModel.agregarFlor(florPrueba)
+        }) {
+            Image(
+                painter = painterResource(id = R.drawable.photo_camera_24dp_e3e3e3_fill0_wght400_grad0_opsz24),
+                contentDescription = "Agregar flor (DEBUG)",
+                modifier = Modifier.size(24.dp)
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+            Text(text = "Agregar flor (DEBUG)")
         }
     }
 }

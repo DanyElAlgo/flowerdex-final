@@ -37,7 +37,7 @@ import com.example.flowerdexapp.ui.theme.FlowerdexAppTheme
 sealed class Screen(val route: String){
     object Home : Screen("home")
     object Register : Screen("register")
-    object Scan : Screen("scan")
+    object Verify : Screen("verify")
     object Index : Screen("index")
     object Detail : Screen("detail/{flowerId}"){
         fun createRoute(flowerId: Long) = "detail/$flowerId"
@@ -121,6 +121,27 @@ fun MainNavigationWrapper(viewModel: FlowerViewModel) {
                     flowerId = flowerId,
                     viewModel = viewModel
                 )
+            }
+
+            // RUTA 3: MENÚ DE INICIO (Home)
+            composable(
+                route = Screen.Home.route
+            ) {
+                HomePage() //TODO
+            }
+
+            // RUTA 4: Registro de nueva flor (Register)
+            composable(
+                route = Screen.Register.route
+            ) {
+                RegisterPage() //TODO
+            }
+
+            // RUTA 5: Verificación de nueva flor (Verify)
+            composable(
+                route = Screen.Verify.route
+            ) {
+                //TODO
             }
         }
     }

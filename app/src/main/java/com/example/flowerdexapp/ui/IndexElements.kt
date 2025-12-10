@@ -1,5 +1,6 @@
 package com.example.flowerdexapp.ui
 
+import android.widget.GridLayout
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -87,8 +88,22 @@ fun FlowerListItem(
         // linea divisoria
         HorizontalDivider(thickness = 2.dp)
     }
-
 }
-fun FlowerBlockItem(flower: Flor, modifier: Modifier = Modifier) {
-    // Aquí se definirá el diseño del bloque de cada flor
+
+@Composable
+fun FlowerBlockItem(flower: Flor,
+    onClick:() -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Column(){
+        ImageExample(modifier = Modifier.width(56.dp))
+        Text(
+            text = flower.nombreComun,
+            style = MaterialTheme.typography.bodyLarge
+        )
+        Text(
+            text = flower.nombreCientifico,
+            style = MaterialTheme.typography.bodyMedium
+        )
+    }
 }
