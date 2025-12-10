@@ -2,6 +2,7 @@ package com.example.flowerdexapp.ui
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -60,8 +61,11 @@ fun ImageExample(
 }
 
 @Composable
-fun FlowerListItem(flower: Flor, modifier: Modifier = Modifier) {
-    Column(modifier = modifier) {
+fun FlowerListItem(
+    flower: Flor,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier) {
+    Column(modifier = modifier.clickable{onClick()}) {
         // datos de la flor
         Row(modifier = Modifier.padding(16.dp)) {
             ImageExample(modifier = Modifier.width(56.dp))

@@ -79,7 +79,23 @@ import com.example.flowerdexapp.data.AppDatabase
 import com.example.flowerdexapp.ui.FlowerViewModel
 import com.example.flowerdexapp.ui.FlowerViewModelFactory
 import com.example.flowerdexapp.ui.IndexPage
+import androidx.navigation.NavType
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
+import androidx.navigation.compose.currentBackStackEntryAsState
+import com.example.flowerdexapp.ui.FlowerPage
 
+sealed class Screen(val route: String){
+    object Home : Screen("home")
+    object Register : Screen("register")
+    object Scan : Screen("scan")
+    object Index : Screen("index")
+    object Detail : Screen("detail/{flowerId}"){
+        fun createRoute(flowerId: Long) = "detail/$flowerId"
+    }
+}
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -93,6 +109,7 @@ class MainActivity : ComponentActivity() {
                 val viewModel: FlowerViewModel = androidx.lifecycle.viewmodel.compose.viewModel(
                     factory = viewModelFactory
                 )
+                MainNavigationWrapper(viewModel = viewModel)
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     SmallTopAppBarExample(
                         viewModel = viewModel,
@@ -106,10 +123,79 @@ class MainActivity : ComponentActivity() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
+fun MainNavigationWrapper(viewModel: FlowerViewModel) {
+    val navController = rememberNavController()
+    // Observamos la ruta actual para cambiar el título y mostrar/ocultar la flecha
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry?.destination?.route
+
+    Scaffold(
+        modifier = Modifier.fillMaxSize(),
+        topBar = {
+            TopAppBar(
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                ),
+                title = {
+                    // Título dinámico
+                    val titulo = if (currentRoute?.startsWith("detail") == true) "Detalle de Flor" else "Enciclopedia"
+                    Text(titulo, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                },
+                navigationIcon = {
+                    // Solo mostramos la flecha si NO estamos en el Home
+                    if (currentRoute != Screen.Home.route) {
+                        IconButton(onClick = { navController.popBackStack() }) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                                contentDescription = "Atrás"
+                            )
+                        }
+                    }
+                }
+            )
+        },
+    ) { innerPadding ->
+        NavHost(
+            navController = navController,
+            startDestination = Screen.Home.route,
+            modifier = Modifier.padding(innerPadding)
+        ) {
+            // RUTA 1: Lista de Flores (Index)
+            composable(Screen.Index.route) {
+                IndexPage(
+                    viewModel = viewModel,
+                    onFlowerClick = { flowerId ->
+                        // Navegar al detalle pasando el ID
+                        navController.navigate(Screen.Detail.createRoute(flowerId))
+                    }
+                )
+            }
+
+            // RUTA 2: Detalle de Flor
+            composable(
+                route = Screen.Detail.route,
+                arguments = listOf(navArgument("flowerId") { type = NavType.LongType })
+            ) { backStackEntry ->
+                // Recuperamos el ID de los argumentos
+                val flowerId = backStackEntry.arguments?.getLong("flowerId") ?: 0L
+
+                FlowerPage(
+                    flowerId = flowerId,
+                    viewModel = viewModel
+                )
+            }
+//            TODO: Agregar otras rutas según sea necesario
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
 fun SmallTopAppBarExample(
     viewModel: FlowerViewModel,
     modifier: Modifier = Modifier
 ) {
+    val navController = rememberNavController()
     Scaffold(
         modifier = modifier.fillMaxSize(),
         topBar = {
@@ -138,6 +224,10 @@ fun SmallTopAppBarExample(
     ) { innerPadding ->
         IndexPage(
             viewModel = viewModel,
+            onFlowerClick = { flowerId ->
+                // Navegar al detalle pasando el ID
+                navController.navigate(Screen.Detail.createRoute(flowerId))
+            },
             modifier = Modifier.padding(top = innerPadding.calculateTopPadding())
         )
     }

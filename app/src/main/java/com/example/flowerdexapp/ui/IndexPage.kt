@@ -46,6 +46,7 @@ import kotlin.collections.get
 @Composable
 fun IndexPage(
     viewModel: FlowerViewModel,
+    onFlowerClick: (Long) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val listaFlores by viewModel.flores.collectAsState(initial = emptyList())
@@ -133,7 +134,10 @@ fun IndexPage(
         if (isListView) {
             LazyColumn {
                 items(listaFlores.size) { index ->
-                    FlowerListItem(flower = listaFlores[index])
+                    FlowerListItem(
+                        flower = listaFlores[index],
+                        onClick = { onFlowerClick(listaFlores[index].id) }
+                    )
                 }
             }
         } else {
