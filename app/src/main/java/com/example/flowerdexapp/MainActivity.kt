@@ -31,7 +31,9 @@ import com.example.flowerdexapp.data.AppDatabase
 import com.example.flowerdexapp.ui.FlowerPage
 import com.example.flowerdexapp.ui.FlowerViewModel
 import com.example.flowerdexapp.ui.FlowerViewModelFactory
+import com.example.flowerdexapp.ui.HomePage
 import com.example.flowerdexapp.ui.IndexPage
+import com.example.flowerdexapp.ui.RegisterPage
 import com.example.flowerdexapp.ui.theme.FlowerdexAppTheme
 
 sealed class Screen(val route: String){
@@ -74,12 +76,14 @@ fun MainNavigationWrapper(viewModel: FlowerViewModel) {
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
+//            TODO: Desaparecer el TopBar en la pantalla de inicio (Home)
             TopAppBar(
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
                 ),
                 title = {
                     val titulo = if (currentRoute?.startsWith("detail") == true) "Detalle de Flor" else "Enciclopedia"
+//                    TODO: Mejorar el manejo de títulos dinámicos
                     Text(titulo, maxLines = 1, overflow = TextOverflow.Ellipsis)
                 },
                 navigationIcon = {
@@ -97,7 +101,7 @@ fun MainNavigationWrapper(viewModel: FlowerViewModel) {
     ) { innerPadding ->
         NavHost(
             navController = navController,
-            startDestination = Screen.Index.route,
+            startDestination = Screen.Home.route,
             modifier = Modifier.padding(innerPadding)
         ) {
             // RUTA 1: Lista de Flores (Index)
