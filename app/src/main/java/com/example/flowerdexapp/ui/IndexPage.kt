@@ -2,33 +2,19 @@ package com.example.flowerdexapp.ui
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.GridView
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Sort
-import androidx.compose.material3.Button
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -41,6 +27,7 @@ import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.flowerdexapp.R
 import com.example.flowerdexapp.data.Flor
@@ -55,11 +42,39 @@ fun IndexPage(
     modifier: Modifier = Modifier
 ) {
     val listaFlores by viewModel.flores.collectAsState(initial = emptyList())
+
+    IndexPageContent(
+        listaFlores = listaFlores,
+        onFlowerClick = onFlowerClick,
+        onAddFlowerClick = {
+            val florPrueba = Flor(
+                nombreCientifico = "Rosa",
+                nombreComun = "Rosa común",
+                familia = "Rosáceas",
+                exposicionSolar = TipoExposicion.SOL_DIRECTO,
+                frecuenciaRiego = 1,
+                estacionPreferida = TipoEstacion.PRIMAVERA,
+                alcalinidadPreferida = "Media",
+                colores = listOf(TipoColor.ROJO, TipoColor.AMARILLO),
+                esToxica = false
+            )
+            viewModel.agregarFlor(florPrueba)
+        },
+        modifier = modifier
+    )
+}
+@Composable
+fun IndexPageContent(
+    listaFlores: List<Flor>,
+    onFlowerClick: (Long) -> Unit,
+    onAddFlowerClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
     var isListView by remember { mutableStateOf(true) }
+
     if (listaFlores.isEmpty()) {
         Column(
-            modifier = modifier
-                .fillMaxSize(),
+            modifier = modifier.fillMaxSize(),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -87,21 +102,7 @@ fun IndexPage(
                         }
                     }
             )
-            Button(onClick = {
-                // Crear una flor de prueba por el momento
-                val florPrueba = Flor(
-                    nombreCientifico = "Rosa",
-                    nombreComun = "Rosa común",
-                    familia = "Rosáceas",
-                    exposicionSolar = TipoExposicion.SOL_DIRECTO,
-                    frecuenciaRiego = 1,
-                    estacionPreferida = TipoEstacion.PRIMAVERA,
-                    alcalinidadPreferida = "Media",
-                    colores = listOf(TipoColor.ROJO, TipoColor.AMARILLO),
-                    esToxica = false
-                )
-                viewModel.agregarFlor(florPrueba)
-            }) {
+            Button(onClick = onAddFlowerClick) {
                 Image(
                     painter = painterResource(id = R.drawable.photo_camera),
                     contentDescription = "Agregar flor",
@@ -160,7 +161,11 @@ fun IndexPage(
                 }
             }
         } else {
-            LazyHorizontalGrid(GridCells.Fixed(2)) {
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(3),
+                verticalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier.fillMaxWidth()
+            ) {
                 items(listaFlores.size) { index ->
                     FlowerBlockItem(
                         flower = listaFlores[index],
@@ -169,21 +174,7 @@ fun IndexPage(
                 }
             }
         }
-        Button(onClick = { //DEBUG, TODO: ELIMINAR LUEGO
-            // Crear una flor de prueba por el momento
-            val florPrueba = Flor(
-                nombreCientifico = "Rosa",
-                nombreComun = "Rosa común",
-                familia = "Rosáceas",
-                exposicionSolar = TipoExposicion.SOL_DIRECTO,
-                frecuenciaRiego = 1,
-                estacionPreferida = TipoEstacion.PRIMAVERA,
-                alcalinidadPreferida = "Media",
-                colores = listOf(TipoColor.ROJO, TipoColor.AMARILLO),
-                esToxica = false
-            )
-            viewModel.agregarFlor(florPrueba)
-        }) {
+        Button(onClick = onAddFlowerClick) {
             Image(
                 painter = painterResource(id = R.drawable.photo_camera),
                 contentDescription = "Agregar flor (DEBUG)",
@@ -193,4 +184,124 @@ fun IndexPage(
             Text(text = "Agregar flor (DEBUG)")
         }
     }
+}
+
+//@Preview(showBackground = true, showSystemUi = true)
+@Composable
+fun IndexPagePreviewEmpty() {
+    IndexPageContent(
+        listaFlores = emptyList(),
+        onFlowerClick = {},
+        onAddFlowerClick = {}
+    )
+}
+
+@Preview(showBackground = true, showSystemUi = true)
+@Composable
+fun IndexPagePreviewPopulated() {
+    val dummyFlowers = listOf(
+        Flor(
+            id = 1,
+            nombreCientifico = "Rosa",
+            nombreComun = "Rosa Roja",
+            familia = "Rosáceas",
+            exposicionSolar = TipoExposicion.SOL_DIRECTO,
+            frecuenciaRiego = 1,
+            estacionPreferida = TipoEstacion.PRIMAVERA,
+            alcalinidadPreferida = "Media",
+            colores = listOf(TipoColor.ROJO),
+            esToxica = false
+        ),
+        Flor(
+            id = 2,
+            nombreCientifico = "Helianthus",
+            nombreComun = "Girasol",
+            familia = "Asteraceae",
+            exposicionSolar = TipoExposicion.SOL_DIRECTO,
+            frecuenciaRiego = 2,
+            estacionPreferida = TipoEstacion.VERANO,
+            alcalinidadPreferida = "Alta",
+            colores = listOf(TipoColor.AMARILLO),
+            esToxica = false
+        ),
+        Flor(
+            id = 1,
+            nombreCientifico = "Rosa",
+            nombreComun = "Rosa Roja",
+            familia = "Rosáceas",
+            exposicionSolar = TipoExposicion.SOL_DIRECTO,
+            frecuenciaRiego = 1,
+            estacionPreferida = TipoEstacion.PRIMAVERA,
+            alcalinidadPreferida = "Media",
+            colores = listOf(TipoColor.ROJO),
+            esToxica = false
+        ),
+        Flor(
+            id = 2,
+            nombreCientifico = "Helianthus",
+            nombreComun = "Girasol",
+            familia = "Asteraceae",
+            exposicionSolar = TipoExposicion.SOL_DIRECTO,
+            frecuenciaRiego = 2,
+            estacionPreferida = TipoEstacion.VERANO,
+            alcalinidadPreferida = "Alta",
+            colores = listOf(TipoColor.AMARILLO),
+            esToxica = false
+        ),
+        Flor(
+            id = 1,
+            nombreCientifico = "Rosa",
+            nombreComun = "Rosa Roja",
+            familia = "Rosáceas",
+            exposicionSolar = TipoExposicion.SOL_DIRECTO,
+            frecuenciaRiego = 1,
+            estacionPreferida = TipoEstacion.PRIMAVERA,
+            alcalinidadPreferida = "Media",
+            colores = listOf(TipoColor.ROJO),
+            esToxica = false
+        ),
+        Flor(
+            id = 2,
+            nombreCientifico = "Helianthus",
+            nombreComun = "Girasol",
+            familia = "Asteraceae",
+            exposicionSolar = TipoExposicion.SOL_DIRECTO,
+            frecuenciaRiego = 2,
+            estacionPreferida = TipoEstacion.VERANO,
+            alcalinidadPreferida = "Alta",
+            colores = listOf(TipoColor.AMARILLO),
+            esToxica = false
+        ),
+        Flor(
+            id = 1,
+            nombreCientifico = "Rosa",
+            nombreComun = "Rosa Roja",
+            familia = "Rosáceas",
+            exposicionSolar = TipoExposicion.SOL_DIRECTO,
+            frecuenciaRiego = 1,
+            estacionPreferida = TipoEstacion.PRIMAVERA,
+            alcalinidadPreferida = "Media",
+            colores = listOf(TipoColor.ROJO),
+            esToxica = false
+        ),
+        Flor(
+            id = 2,
+            nombreCientifico = "Helianthus",
+            nombreComun = "Girasol",
+            familia = "Asteraceae",
+            exposicionSolar = TipoExposicion.SOL_DIRECTO,
+            frecuenciaRiego = 2,
+            estacionPreferida = TipoEstacion.VERANO,
+            alcalinidadPreferida = "Alta",
+            colores = listOf(TipoColor.AMARILLO),
+            esToxica = false
+        )
+    )
+
+    // We pass the dummy list to see the list view
+    IndexPageContent(
+        listaFlores = dummyFlowers,
+        onFlowerClick = {},
+        onAddFlowerClick = {}
+    )
 }

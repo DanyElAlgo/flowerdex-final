@@ -95,8 +95,12 @@ fun FlowerBlockItem(flower: Flor,
     onClick:() -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Column(){
-        ImageExample(modifier = Modifier.width(120.dp))
+    Column(
+        modifier = modifier
+            .clickable { onClick() }
+            .padding(8.dp)
+    ) {
+        ImageExample(modifier = Modifier.fillMaxWidth())
         Text(
             text = flower.nombreComun,
             style = MaterialTheme.typography.bodyLarge
