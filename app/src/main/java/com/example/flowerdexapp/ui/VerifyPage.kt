@@ -12,9 +12,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -145,6 +147,36 @@ fun VerifyPage(
                         style = MaterialTheme.typography.bodyMedium
                     )
                 }
+            }
+        }
+        Column( // Dedicado a los botones de cancelado y guardado
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+        ){
+            Button(
+                modifier = Modifier.fillMaxWidth(),
+                onClick= { onBackClick() }) {
+                Image(
+                    painter = painterResource(id = R.drawable.undo_icon),
+                    contentDescription = "Volver",
+                    modifier = Modifier.size(24.dp)
+                )
+                Spacer(modifier = Modifier.width(12.dp))
+                Text(text="Cancelar",
+                    style = MaterialTheme.typography.titleMedium)
+            }
+            Button(
+                modifier = Modifier.fillMaxWidth(),
+                onClick={ onSaveClick() /*TODO: Guardar nueva adquisición*/}){
+                Image(
+                    painter = painterResource(id = R.drawable.save_icon),
+                    contentDescription = "Guardar nueva adquisición",
+                    modifier = Modifier.size(24.dp)
+                )
+                Spacer(modifier = Modifier.width(12.dp))
+                Text(text="Guardar",
+                    style = MaterialTheme.typography.titleMedium)
             }
         }
     }

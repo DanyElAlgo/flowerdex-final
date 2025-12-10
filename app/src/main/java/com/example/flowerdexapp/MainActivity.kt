@@ -149,7 +149,7 @@ fun MainNavigationWrapper(viewModel: FlowerViewModel) {
                 RegisterPage(
                     onBackClick = { navController.popBackStack() },
                     onScanClick = { navController.navigate(Screen.Verify.route) }
-                ) //TODO
+                ) //TODO: Agregar acción para escaneo
             }
 
             // RUTA 5: Verificación de nueva flor (Verify)
@@ -171,7 +171,7 @@ fun MainNavigationWrapper(viewModel: FlowerViewModel) {
                     onBackClick = { navController.popBackStack() },
                     onSaveClick = { navController.navigate(Screen.Index.route) }
                 )
-                //TODO
+
             }
         }
     }
