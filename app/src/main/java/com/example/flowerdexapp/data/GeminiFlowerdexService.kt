@@ -9,14 +9,13 @@ import com.google.ai.client.generativeai.type.content
 import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-
-private const val API_KEY = "AIzaSyC-Y4rkEevHlBz1NvRrpAnyK2egHLb9AOw" //TODO: Usar un archivo de propiedades para obtener de manera segura mi API KEY
+import com.example.flowerdexapp.BuildConfig
 
 class GeminiFlowerdexService {
 
     private val generativeModel = GenerativeModel(
         modelName = "gemini-2.5-flash", // TODO: Revisar otros posibles modelos
-        apiKey = API_KEY
+        apiKey = BuildConfig.GEMINI_API_KEY
     )
 
     private val gson = Gson()
