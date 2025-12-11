@@ -59,9 +59,13 @@ class FlowerViewModel(
             val dto = geminiService.identificarFlor(context, uri)
             if (dto != null) {
                 val florTemporal = mapearDtoAEntidad(dto)
-                _scanState.value = ScanUiState.Success(florTemporal, uri)
-            } else {
-                _scanState.value = ScanUiState.Error("No se pudo identificar la flor. Intenta de nuevo.")
+                if(florTemporal.nombreComun == "Desconocido"){ // Caso en que Gemini no pueda identificar la flor o la imagen no es una flor
+                    _scanState.value = ScanUiState.Error("No se pudo identificar la flor o la imagen es inválida. Intenta de nuevo con una imagen diferente.")
+                } else { // Caso exitoso
+                    _scanState.value = ScanUiState.Success(florTemporal, uri)
+                }
+            } else { // Caso donde hubo un problema de servidor
+                _scanState.value = ScanUiState.Error("No se pudo identificar la flor. Verifica tu conexión a internet e intenta de nuevo.")
             }
         }
     }
