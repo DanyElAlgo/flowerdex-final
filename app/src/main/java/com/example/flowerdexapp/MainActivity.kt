@@ -57,7 +57,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
 
         val database = AppDatabase.getDatabase(applicationContext)
-        val viewModelFactory = FlowerViewModelFactory(database.florDao())
+        val viewModelFactory = FlowerViewModelFactory(this.application, database.florDao())
 
         setContent {
             FlowerdexAppTheme {
