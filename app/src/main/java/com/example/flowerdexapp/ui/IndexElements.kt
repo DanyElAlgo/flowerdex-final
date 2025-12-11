@@ -24,6 +24,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
 import com.example.flowerdexapp.R
 import com.example.flowerdexapp.data.Flor
 
@@ -47,7 +48,7 @@ fun ImageExample(
                 .size(sizeDp.dp)
                 .clip(shape)
         ) {
-            coil.compose.AsyncImage(
+            AsyncImage(
                 model = imageUri,
                 contentDescription = "Imagen",
                 placeholder = painterResource(id = R.drawable.placeholder),

@@ -21,6 +21,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
 import com.example.flowerdexapp.R
 
 
@@ -42,14 +43,13 @@ fun FlowerPage(
     Column(modifier = modifier
         .fillMaxSize()
         .verticalScroll(scrollState)) {
-        Image(
-            painter = painterResource(id = R.drawable.placeholder),
-            contentDescription = "Imagen de la flor",
+        AsyncImage(
+            model = flor.fotoUri,
+            contentDescription = "Imagen",
+            placeholder = painterResource(id = R.drawable.placeholder),
+            error = painterResource(id = R.drawable.placeholder),
             contentScale = ContentScale.Crop,
-            modifier = Modifier
-                .fillMaxWidth()
-                .aspectRatio(1f)
-                .clip(RoundedCornerShape(12.dp))
+            modifier = Modifier.fillMaxWidth().aspectRatio(1f)
         )
         Spacer(modifier = Modifier.size(16.dp))
         Column(modifier = Modifier.padding(start = 16.dp)) {
