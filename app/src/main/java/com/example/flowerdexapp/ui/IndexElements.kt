@@ -23,13 +23,19 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextOverflow.Companion.Ellipsis
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
 import com.example.flowerdexapp.R
 import com.example.flowerdexapp.data.Flor
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 
 @Composable
 fun ImageExample(
+    imageUri: String?,
     modifier: Modifier = Modifier,
     sizeDp: Int = 200,
     borderWidthDp: Int = 2
@@ -46,9 +52,11 @@ fun ImageExample(
                 .size(sizeDp.dp)
                 .clip(shape)
         ) {
-            Image(
-                painter = painterResource(id = R.drawable.placeholder),
+            AsyncImage(
+                model = imageUri,
                 contentDescription = "Imagen",
+                placeholder = painterResource(id = R.drawable.placeholder),
+                error = painterResource(id = R.drawable.placeholder),
                 contentScale = ContentScale.Crop,
                 modifier = Modifier.matchParentSize()
             )
@@ -67,9 +75,11 @@ fun FlowerListItem(
     onClick: () -> Unit,
     modifier: Modifier = Modifier) {
     Column(modifier = modifier.clickable{onClick()}) {
-        // datos de la flor
         Row(modifier = Modifier.padding(16.dp)) {
-            ImageExample(modifier = Modifier.width(56.dp))
+            ImageExample(
+                imageUri = flower.fotoUri,
+                modifier = Modifier.width(56.dp)
+            )
             Column(modifier = Modifier.padding(start = 16.dp)) {
                 Text(
                     text = flower.nombreComun,
@@ -80,34 +90,44 @@ fun FlowerListItem(
                     style = MaterialTheme.typography.bodyMedium
                 )
                 Text(
-                    text = "Fecha obtención: ${flower.fechaAvistamiento ?: "Desconocida"}",
+                    text = "Fecha obtención: ${
+                        flower.fechaAvistamiento?.let { millis ->
+                            SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(Date(millis))
+                        } ?: "Desconocida"
+                    }",
                     style = MaterialTheme.typography.bodySmall
                 )
             }
         }
-        // linea divisoria
         HorizontalDivider(thickness = 2.dp)
     }
 }
 
 @Composable
 fun FlowerBlockItem(flower: Flor,
-    onClick:() -> Unit,
-    modifier: Modifier = Modifier
+                    onClick:() -> Unit,
+                    modifier: Modifier = Modifier
 ) {
     Column(
         modifier = modifier
             .clickable { onClick() }
             .padding(8.dp)
     ) {
-        ImageExample(modifier = Modifier.fillMaxWidth())
+        ImageExample(
+            imageUri = flower.fotoUri,
+            modifier = Modifier.fillMaxWidth()
+        )
         Text(
             text = flower.nombreComun,
-            style = MaterialTheme.typography.bodyLarge
+            style = MaterialTheme.typography.bodyLarge,
+            maxLines = 1,
+            overflow = Ellipsis
         )
         Text(
             text = flower.nombreCientifico,
-            style = MaterialTheme.typography.bodyMedium
+            style = MaterialTheme.typography.bodyMedium,
+            maxLines = 1,
+            overflow = Ellipsis
         )
     }
 }

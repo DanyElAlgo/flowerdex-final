@@ -1,110 +1,239 @@
 package com.example.flowerdexapp.ui
 
+import android.net.Uri
+import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.result.launch
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
 import com.example.flowerdexapp.R
-import com.example.flowerdexapp.data.Flor
-import com.example.flowerdexapp.data.TipoColor
-import com.example.flowerdexapp.data.TipoEstacion
-import com.example.flowerdexapp.data.TipoExposicion
+import com.example.flowerdexapp.utils.ImageUtils
 
 @Composable
 fun RegisterPage(
+    viewModel: FlowerViewModel,
     onBackClick: () -> Unit,
-    onScanClick: () -> Unit,
+    onScanSuccess: () -> Unit,
     modifier: Modifier = Modifier
-){
-//    Text(text="work in progress")
-    Column(
-        modifier = modifier.padding(16.dp)
-    ){
-        // Imagen cuadrada que cubra el width del padre
-        Image(
-            painter = painterResource(id = R.drawable.placeholder),
-            contentDescription = "Imagen",
-            modifier = Modifier
-                .fillMaxWidth()
-                .aspectRatio(1f),
-        )
-        Spacer(modifier = Modifier.size(16.dp))
-        Column(
-            modifier = Modifier
-                .padding(vertical = 16.dp, horizontal = 32.dp)
-                .fillMaxWidth()
-        ){
-            // Botones de acceso a cámara o galería
-            Button(
-                border = ButtonDefaults.outlinedButtonBorder,
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.surfaceVariant,
-                    contentColor = MaterialTheme.colorScheme.onSurfaceVariant
-                ),
-                modifier = Modifier.fillMaxWidth(),
-                onClick= {/*TODO: Acceder a cámara*/}) {
-                Image(
-                    painter = painterResource(id = R.drawable.add_a_photo),
-                    contentDescription = "Subir fotografía desde la cámara",
-                    modifier = Modifier.size(24.dp),
-                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurfaceVariant)
-                )
-                Spacer(modifier = Modifier.width(11.dp))
-                Text(text="Cámara",
-                    style = MaterialTheme.typography.titleMedium)
-            }
-            Button(
-                border = ButtonDefaults.outlinedButtonBorder,
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.surfaceVariant,
-                    contentColor = MaterialTheme.colorScheme.onSurfaceVariant
-                ),
-                modifier = Modifier.fillMaxWidth(),
-                onClick={/*TODO: Pedir acceso a galería*/}){
-                Image(
-                    painter = painterResource(id = R.drawable.image_arrow_up),
-                    contentDescription = "Subir fotografía desde la galería",
-                    modifier = Modifier.size(24.dp),
-                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurfaceVariant)
-                )
-                Spacer(modifier = Modifier.width(12.dp))
-                Text(text="Galería",
-                    style = MaterialTheme.typography.titleMedium)
-            }
-        }
-        // Botón de escaneo/verificación
-        Button(
-            modifier = Modifier.fillMaxWidth(),
-            onClick = { onScanClick()/*TODO: Agregar acción para escaneo*/ }) {
-            Image(
-                painter = painterResource(id = R.drawable.image_search),
-                contentDescription = "Escanear imagen seleccionada",
-                modifier = Modifier.size(32.dp)
-            )
-            Spacer(modifier = Modifier.width(16.dp))
-            Text(text="Escanear",
-                style = MaterialTheme.typography.headlineSmall)
-        }
-//        TODO: Corregir alineamiento vertical del texto
-    }
-}
+) {
+    val context = LocalContext.current
+    val scanState by viewModel.scanState.collectAsState()
 
-@Preview(showBackground = true)
-@Composable
-fun RegisterPagePreview(){
-    RegisterPage(onBackClick = {}, onScanClick = {})
+    var tempCameraUri by remember { mutableStateOf<Uri?>(null) }
+    var imageUri by remember { mutableStateOf(viewModel.currentPhotoUri) }
+    var showCameraPermissionDeniedDialog by remember { mutableStateOf(false) }
+
+    val galleryLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.PickVisualMedia()
+    ) { uri: Uri? ->
+        uri?.let {
+            imageUri = it
+            viewModel.onPhotoSelected(it)
+        }
+    }
+
+    val cameraLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.TakePicture()
+    ) { success ->
+        if (success && tempCameraUri != null) {
+            imageUri = tempCameraUri
+            viewModel.onPhotoSelected(tempCameraUri!!)
+        }
+    }
+
+    val cameraPermissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        if (isGranted) {
+            tempCameraUri = ImageUtils.createTempPictureUri(context)
+            cameraLauncher.launch(tempCameraUri!!)
+        } else {
+            showCameraPermissionDeniedDialog = true
+        }
+    }
+
+    LaunchedEffect(scanState) {
+        when (scanState) {
+            is ScanUiState.Success -> onScanSuccess()
+            is ScanUiState.Error -> {
+                Toast.makeText(context, (scanState as ScanUiState.Error).mensaje, Toast.LENGTH_LONG)
+                    .show()
+                viewModel.resetScanState()
+            }
+
+            else -> {}
+        }
+    }
+
+    Box(modifier = modifier.fillMaxSize()) {
+        Column(
+            modifier = Modifier.padding(16.dp)
+        ) {
+            Box(modifier = Modifier.fillMaxWidth().aspectRatio(1f)) {
+                if (imageUri != null) {
+                    AsyncImage(
+                        model = imageUri,
+                        contentDescription = "Foto seleccionada",
+                        modifier = Modifier.matchParentSize(),
+                        contentScale = ContentScale.Crop
+                    )
+                } else {
+                    Image(
+                        painter = painterResource(id = R.drawable.placeholder),
+                        contentDescription = "Placeholder",
+                        modifier = Modifier.matchParentSize(),
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.size(16.dp))
+
+            val isEnabled = scanState !is ScanUiState.Loading
+
+            Column(
+                modifier = Modifier
+                    .padding(vertical = 16.dp, horizontal = 32.dp)
+                    .fillMaxWidth()
+            ) {
+                Button(
+                    enabled = isEnabled,
+                    border = ButtonDefaults.outlinedButtonBorder,
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                        contentColor = MaterialTheme.colorScheme.onSurfaceVariant
+                    ),
+                    modifier = Modifier.fillMaxWidth(),
+                    onClick = {
+                        val permission = android.Manifest.permission.CAMERA
+                        val permissionCheck = androidx.core.content.ContextCompat.checkSelfPermission(
+                            context,
+                            permission
+                        )
+                        if (permissionCheck == android.content.pm.PackageManager.PERMISSION_GRANTED) {
+                            tempCameraUri = ImageUtils.createTempPictureUri(context)
+                            cameraLauncher.launch(tempCameraUri!!)
+                        } else {
+                            cameraPermissionLauncher.launch(permission)
+                        }
+                    }) {
+                    Image(
+                        painter = painterResource(id = R.drawable.add_a_photo),
+                        contentDescription = null,
+                        modifier = Modifier.size(24.dp),
+                        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurfaceVariant)
+                    )
+                    Spacer(modifier = Modifier.width(11.dp))
+                    Text(text = "Cámara", style = MaterialTheme.typography.titleMedium)
+                }
+                if (showCameraPermissionDeniedDialog) {
+                    androidx.compose.material3.AlertDialog(
+                        onDismissRequest = { showCameraPermissionDeniedDialog = false },
+                        confirmButton = {
+                            androidx.compose.material3.TextButton(onClick = { showCameraPermissionDeniedDialog = false }) {
+                                Text("OK")
+                            }
+                        },
+                        title = { Text("Permiso requerido") },
+                        text = { Text("La aplicación necesita acceso a la cámara para tomar fotos de las flores.") }
+                    )
+                }
+                Button(
+                    enabled = isEnabled,
+                    border = ButtonDefaults.outlinedButtonBorder,
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                        contentColor = MaterialTheme.colorScheme.onSurfaceVariant
+                    ),
+                    modifier = Modifier.fillMaxWidth(),
+                    onClick = {
+                        galleryLauncher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+                    }) {
+                    Image(
+                        painter = painterResource(id = R.drawable.image_arrow_up),
+                        contentDescription = null,
+                        modifier = Modifier.size(24.dp),
+                        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurfaceVariant)
+                    )
+                    Spacer(modifier = Modifier.width(12.dp))
+                    Text(text = "Galería", style = MaterialTheme.typography.titleMedium)
+                }
+            }
+
+            Button(
+                modifier = Modifier.fillMaxWidth(),
+                enabled = isEnabled && imageUri != null,
+                onClick = { viewModel.escanearFlor() }
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.image_search),
+                    contentDescription = null,
+                    modifier = Modifier.size(32.dp)
+                )
+                Spacer(modifier = Modifier.width(16.dp))
+                Text(text = "Escanear", style = MaterialTheme.typography.headlineSmall)
+            }
+        }
+
+        if (scanState is ScanUiState.Loading) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.Black.copy(alpha = 0.6f)),
+                contentAlignment = Alignment.Center
+            ) {
+                Surface(
+                    shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp),
+                    color = MaterialTheme.colorScheme.surface,
+                    shadowElevation = 8.dp,
+                    tonalElevation = 8.dp
+                ) {
+                    Column(
+                        modifier = Modifier.padding(24.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        CircularProgressIndicator()
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Text(
+                            text = "Consultando a Gemini AI...",
+                            style = MaterialTheme.typography.bodyLarge
+                        )
+                    }
+                }
+            }
+        }
+    }
 }

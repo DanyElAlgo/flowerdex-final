@@ -57,7 +57,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
 
         val database = AppDatabase.getDatabase(applicationContext)
-        val viewModelFactory = FlowerViewModelFactory(database.florDao())
+        val viewModelFactory = FlowerViewModelFactory(this.application, database.florDao())
 
         setContent {
             FlowerdexAppTheme {
@@ -81,27 +81,31 @@ fun MainNavigationWrapper(viewModel: FlowerViewModel) {
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
-//            TODO: Desaparecer el TopBar en la pantalla de inicio (Home)
-            TopAppBar(
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                ),
-                title = {
-                    val titulo = if (currentRoute?.startsWith("detail") == true) "Detalle de Flor" else "Enciclopedia"
-//                    TODO: Mejorar el manejo de títulos dinámicos
-                    Text(titulo, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                },
-                navigationIcon = {
-                    if (currentRoute != Screen.Index.route && currentRoute != Screen.Home.route) {
-                        IconButton(onClick = { navController.popBackStack() }) {
+            if (currentRoute != Screen.Home.route) {
+                TopAppBar(
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = MaterialTheme.colorScheme.primaryContainer,
+                    ),
+                    title = {
+                        val titleText = when {
+                            currentRoute == Screen.Index.route -> "Enciclopedia"
+                            currentRoute == Screen.Register.route -> "Registrar Flor"
+                            currentRoute == Screen.Verify.route -> "Verificar Datos"
+                            currentRoute?.startsWith("detail") == true -> "Detalle de Flor"
+                            else -> "Flowerdex"
+                        }
+                        Text(titleText, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                    },
+                    navigationIcon = {
+                        IconButton(onClick = { navController.navigateUp() }) {
                             Icon(
                                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                                 contentDescription = "Atrás"
                             )
                         }
                     }
-                }
-            )
+                )
+            }
         },
     ) { innerPadding ->
         NavHost(
@@ -115,7 +119,12 @@ fun MainNavigationWrapper(viewModel: FlowerViewModel) {
                     viewModel = viewModel,
                     onFlowerClick = { flowerId ->
                         navController.navigate(Screen.Detail.createRoute(flowerId))
-                    }
+                    },
+                    onRegisterClick = { navController.navigate(Screen.Register.route){
+                        popUpTo(Screen.Home.route) {
+                            inclusive = false
+                        }
+                    } }
                 )
             }
 
@@ -147,9 +156,10 @@ fun MainNavigationWrapper(viewModel: FlowerViewModel) {
                 route = Screen.Register.route
             ) {
                 RegisterPage(
+                    viewModel = viewModel,
                     onBackClick = { navController.popBackStack() },
-                    onScanClick = { navController.navigate(Screen.Verify.route) }
-                ) //TODO: Agregar acción para escaneo
+                    onScanSuccess = { navController.navigate(Screen.Verify.route) }
+                )
             }
 
             // RUTA 5: Verificación de nueva flor (Verify)
@@ -157,19 +167,11 @@ fun MainNavigationWrapper(viewModel: FlowerViewModel) {
                 route = Screen.Verify.route
             ) {
                 VerifyPage(
-                    datos = Flor(
-                        nombreCientifico = "Rosa",
-                nombreComun = "Rosa común",
-                familia = "Rosáceas",
-                exposicionSolar = TipoExposicion.SOL_DIRECTO,
-                frecuenciaRiego = 1,
-                estacionPreferida = TipoEstacion.PRIMAVERA,
-                alcalinidadPreferida = "Media",
-                colores = listOf(TipoColor.ROJO, TipoColor.AMARILLO),
-                esToxica = false
-                ),
+                    viewModel = viewModel,
                     onBackClick = { navController.popBackStack() },
-                    onSaveClick = { navController.navigate(Screen.Index.route) }
+                    onSaveSuccess = { navController.navigate(Screen.Index.route){
+                        popUpTo(Screen.Home.route) { inclusive = false }
+                    } }
                 )
 
             }

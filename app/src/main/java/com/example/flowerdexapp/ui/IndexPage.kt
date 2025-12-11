@@ -39,6 +39,7 @@ import com.example.flowerdexapp.data.TipoExposicion
 fun IndexPage(
     viewModel: FlowerViewModel,
     onFlowerClick: (Long) -> Unit,
+    onRegisterClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val listaFlores by viewModel.flores.collectAsState(initial = emptyList())
@@ -46,20 +47,7 @@ fun IndexPage(
     IndexPageContent(
         listaFlores = listaFlores,
         onFlowerClick = onFlowerClick,
-        onAddFlowerClick = {
-            val florPrueba = Flor(
-                nombreCientifico = "Rosa",
-                nombreComun = "Rosa común",
-                familia = "Rosáceas",
-                exposicionSolar = TipoExposicion.SOL_DIRECTO,
-                frecuenciaRiego = 1,
-                estacionPreferida = TipoEstacion.PRIMAVERA,
-                alcalinidadPreferida = "Media",
-                colores = listOf(TipoColor.ROJO, TipoColor.AMARILLO),
-                esToxica = false
-            )
-            viewModel.agregarFlor(florPrueba)
-        },
+        onRegisterClick = onRegisterClick,
         modifier = modifier
     )
 }
@@ -67,7 +55,7 @@ fun IndexPage(
 fun IndexPageContent(
     listaFlores: List<Flor>,
     onFlowerClick: (Long) -> Unit,
-    onAddFlowerClick: () -> Unit,
+    onRegisterClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     var isListView by remember { mutableStateOf(true) }
@@ -102,7 +90,7 @@ fun IndexPageContent(
                         }
                     }
             )
-            Button(onClick = onAddFlowerClick) {
+            Button(onClick = onRegisterClick) {
                 Image(
                     painter = painterResource(id = R.drawable.photo_camera),
                     contentDescription = "Agregar flor",
@@ -174,15 +162,6 @@ fun IndexPageContent(
                 }
             }
         }
-        Button(onClick = onAddFlowerClick) {
-            Image(
-                painter = painterResource(id = R.drawable.photo_camera),
-                contentDescription = "Agregar flor (DEBUG)",
-                modifier = Modifier.size(24.dp)
-            )
-            Spacer(modifier = Modifier.width(8.dp))
-            Text(text = "Agregar flor (DEBUG)")
-        }
     }
 }
 
@@ -192,7 +171,7 @@ fun IndexPagePreviewEmpty() {
     IndexPageContent(
         listaFlores = emptyList(),
         onFlowerClick = {},
-        onAddFlowerClick = {}
+        onRegisterClick = {}
     )
 }
 
@@ -301,6 +280,6 @@ fun IndexPagePreviewPopulated() {
     IndexPageContent(
         listaFlores = dummyFlowers,
         onFlowerClick = {},
-        onAddFlowerClick = {}
+        onRegisterClick = {}
     )
 }
