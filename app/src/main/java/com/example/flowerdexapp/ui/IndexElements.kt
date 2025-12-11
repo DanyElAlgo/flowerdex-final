@@ -30,6 +30,7 @@ import com.example.flowerdexapp.data.Flor
 
 @Composable
 fun ImageExample(
+    imageUri: String?,
     modifier: Modifier = Modifier,
     sizeDp: Int = 200,
     borderWidthDp: Int = 2
@@ -46,9 +47,11 @@ fun ImageExample(
                 .size(sizeDp.dp)
                 .clip(shape)
         ) {
-            Image(
-                painter = painterResource(id = R.drawable.placeholder),
+            coil.compose.AsyncImage(
+                model = imageUri,
                 contentDescription = "Imagen",
+                placeholder = painterResource(id = R.drawable.placeholder),
+                error = painterResource(id = R.drawable.placeholder),
                 contentScale = ContentScale.Crop,
                 modifier = Modifier.matchParentSize()
             )
@@ -67,9 +70,11 @@ fun FlowerListItem(
     onClick: () -> Unit,
     modifier: Modifier = Modifier) {
     Column(modifier = modifier.clickable{onClick()}) {
-        // datos de la flor
         Row(modifier = Modifier.padding(16.dp)) {
-            ImageExample(modifier = Modifier.width(56.dp))
+            ImageExample(
+                imageUri = flower.fotoUri,
+                modifier = Modifier.width(56.dp)
+            )
             Column(modifier = Modifier.padding(start = 16.dp)) {
                 Text(
                     text = flower.nombreComun,
@@ -85,22 +90,24 @@ fun FlowerListItem(
                 )
             }
         }
-        // linea divisoria
         HorizontalDivider(thickness = 2.dp)
     }
 }
 
 @Composable
 fun FlowerBlockItem(flower: Flor,
-    onClick:() -> Unit,
-    modifier: Modifier = Modifier
+                    onClick:() -> Unit,
+                    modifier: Modifier = Modifier
 ) {
     Column(
         modifier = modifier
             .clickable { onClick() }
             .padding(8.dp)
     ) {
-        ImageExample(modifier = Modifier.fillMaxWidth())
+        ImageExample(
+            imageUri = flower.fotoUri,
+            modifier = Modifier.fillMaxWidth()
+        )
         Text(
             text = flower.nombreComun,
             style = MaterialTheme.typography.bodyLarge

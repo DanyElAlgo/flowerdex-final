@@ -15,7 +15,7 @@ private const val API_KEY = "" //TODO: Usar un archivo de propiedades para obten
 class GeminiFlowerdexService {
 
     private val generativeModel = GenerativeModel(
-        modelName = "gemini-1.5-flash", // TODO: Revisar otros posibles modelos
+        modelName = "gemini-2.5-flash", // TODO: Revisar otros posibles modelos
         apiKey = API_KEY
     )
 
