@@ -81,27 +81,31 @@ fun MainNavigationWrapper(viewModel: FlowerViewModel) {
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
-//            TODO: Desaparecer el TopBar en la pantalla de inicio (Home)
-            TopAppBar(
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                ),
-                title = {
-                    val titulo = if (currentRoute?.startsWith("detail") == true) "Detalle de Flor" else "Enciclopedia"
-//                    TODO: Mejorar el manejo de títulos dinámicos
-                    Text(titulo, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                },
-                navigationIcon = {
-                    if (currentRoute != Screen.Index.route && currentRoute != Screen.Home.route) {
-                        IconButton(onClick = { navController.popBackStack() }) {
+            if (currentRoute != Screen.Home.route) {
+                TopAppBar(
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = MaterialTheme.colorScheme.primaryContainer,
+                    ),
+                    title = {
+                        val titleText = when {
+                            currentRoute == Screen.Index.route -> "Enciclopedia"
+                            currentRoute == Screen.Register.route -> "Registrar Flor"
+                            currentRoute == Screen.Verify.route -> "Verificar Datos"
+                            currentRoute?.startsWith("detail") == true -> "Detalle de Flor"
+                            else -> "Flowerdex"
+                        }
+                        Text(titleText, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                    },
+                    navigationIcon = {
+                        IconButton(onClick = { navController.navigateUp() }) {
                             Icon(
                                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                                 contentDescription = "Atrás"
                             )
                         }
                     }
-                }
-            )
+                )
+            }
         },
     ) { innerPadding ->
         NavHost(
