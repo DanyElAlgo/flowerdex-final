@@ -159,7 +159,6 @@ fun IndexPageContent(
                         flower = listaFlores[index],
                         onClick = { onFlowerClick(listaFlores[index].id) }
                     )
-                    HorizontalDivider(thickness = 2.dp)
                 }
             }
         }

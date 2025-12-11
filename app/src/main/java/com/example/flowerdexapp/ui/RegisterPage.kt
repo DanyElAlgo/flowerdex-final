@@ -5,6 +5,7 @@ import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.result.launch
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -53,18 +54,35 @@ fun RegisterPage(
     val scanState by viewModel.scanState.collectAsState()
 
     var tempCameraUri by remember { mutableStateOf<Uri?>(null) }
+    var imageUri by remember { mutableStateOf(viewModel.currentPhotoUri) }
+    var showCameraPermissionDeniedDialog by remember { mutableStateOf(false) }
 
     val galleryLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia()
     ) { uri: Uri? ->
-        uri?.let { viewModel.onPhotoSelected(it) }
+        uri?.let {
+            imageUri = it
+            viewModel.onPhotoSelected(it)
+        }
     }
 
     val cameraLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.TakePicture()
     ) { success ->
         if (success && tempCameraUri != null) {
+            imageUri = tempCameraUri
             viewModel.onPhotoSelected(tempCameraUri!!)
+        }
+    }
+
+    val cameraPermissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        if (isGranted) {
+            tempCameraUri = ImageUtils.createTempPictureUri(context)
+            cameraLauncher.launch(tempCameraUri!!)
+        } else {
+            showCameraPermissionDeniedDialog = true
         }
     }
 
@@ -86,9 +104,9 @@ fun RegisterPage(
             modifier = Modifier.padding(16.dp)
         ) {
             Box(modifier = Modifier.fillMaxWidth().aspectRatio(1f)) {
-                if (viewModel.currentPhotoUri != null) {
+                if (imageUri != null) {
                     AsyncImage(
-                        model = viewModel.currentPhotoUri,
+                        model = imageUri,
                         contentDescription = "Foto seleccionada",
                         modifier = Modifier.matchParentSize(),
                         contentScale = ContentScale.Crop
@@ -120,8 +138,17 @@ fun RegisterPage(
                     ),
                     modifier = Modifier.fillMaxWidth(),
                     onClick = {
-                        tempCameraUri = ImageUtils.createTempPictureUri(context)
-                        cameraLauncher.launch(tempCameraUri!!)
+                        val permission = android.Manifest.permission.CAMERA
+                        val permissionCheck = androidx.core.content.ContextCompat.checkSelfPermission(
+                            context,
+                            permission
+                        )
+                        if (permissionCheck == android.content.pm.PackageManager.PERMISSION_GRANTED) {
+                            tempCameraUri = ImageUtils.createTempPictureUri(context)
+                            cameraLauncher.launch(tempCameraUri!!)
+                        } else {
+                            cameraPermissionLauncher.launch(permission)
+                        }
                     }) {
                     Image(
                         painter = painterResource(id = R.drawable.add_a_photo),
@@ -131,6 +158,18 @@ fun RegisterPage(
                     )
                     Spacer(modifier = Modifier.width(11.dp))
                     Text(text = "Cámara", style = MaterialTheme.typography.titleMedium)
+                }
+                if (showCameraPermissionDeniedDialog) {
+                    androidx.compose.material3.AlertDialog(
+                        onDismissRequest = { showCameraPermissionDeniedDialog = false },
+                        confirmButton = {
+                            androidx.compose.material3.TextButton(onClick = { showCameraPermissionDeniedDialog = false }) {
+                                Text("OK")
+                            }
+                        },
+                        title = { Text("Permiso requerido") },
+                        text = { Text("La aplicación necesita acceso a la cámara para tomar fotos de las flores.") }
+                    )
                 }
                 Button(
                     enabled = isEnabled,
@@ -156,7 +195,7 @@ fun RegisterPage(
 
             Button(
                 modifier = Modifier.fillMaxWidth(),
-                enabled = isEnabled && viewModel.currentPhotoUri != null,
+                enabled = isEnabled && imageUri != null,
                 onClick = { viewModel.escanearFlor() }
             ) {
                 Image(
@@ -196,6 +235,5 @@ fun RegisterPage(
                 }
             }
         }
-
     }
 }

@@ -91,6 +91,7 @@ fun FlowerListItem(
                 )
             }
         }
+        HorizontalDivider(thickness = 2.dp)
     }
 }
 
