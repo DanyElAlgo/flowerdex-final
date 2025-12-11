@@ -58,7 +58,14 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
-    implementation("androidx.room:room-runtime")
-    implementation("androidx.room:room-ktx")
-    ksp("androidx.room:room-compiler")
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.ktx)
+    ksp(libs.androidx.room.compiler)
+
+    implementation("com.google.code.gson:gson:2.13.2")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.0")
+
+    implementation("androidx.compose.material:material-icons-extended:1.7.8")
+
+    implementation("androidx.navigation:navigation-compose:2.9.6")
 }
