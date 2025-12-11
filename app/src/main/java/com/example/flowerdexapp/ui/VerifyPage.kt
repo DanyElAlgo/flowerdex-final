@@ -35,15 +35,28 @@ import com.example.flowerdexapp.data.Flor
 import com.example.flowerdexapp.data.TipoColor
 import com.example.flowerdexapp.data.TipoEstacion
 import com.example.flowerdexapp.data.TipoExposicion
+import coil.compose.AsyncImage
+import java.io.File
 
 @Composable
 fun VerifyPage(
-    datos: Flor,
+    viewModel: FlowerViewModel,
     onBackClick: () -> Unit,
-    onSaveClick: () -> Unit,
+    onSaveSuccess: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val flor = datos
+    val scanState by viewModel.scanState.collectAsState()
+
+    if(scanState !is ScanUiState.Success){
+        Text("Error: No hay datos de escaneo para verificar.")
+        Button(onClick = onBackClick) { Text("Volver") }
+        return
+    }
+
+    val successState = scanState as ScanUiState.Success
+    val flor = successState.florTemporal
+    val imageUri = successState.imageUri
+
     var scrollState = rememberScrollState()
     Column(modifier = modifier
         .fillMaxSize()
@@ -54,8 +67,8 @@ fun VerifyPage(
                 .padding(16.dp),
             horizontalArrangement = Arrangement.Start
         ) {
-            Image(
-                painter = painterResource(id = R.drawable.placeholder),
+            AsyncImage(
+                model = imageUri,
                 contentDescription = "Imagen de la flor",
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
@@ -176,7 +189,10 @@ fun VerifyPage(
             }
             Button(
                 modifier = Modifier.fillMaxWidth(),
-                onClick={ onSaveClick() /*TODO: Guardar nueva adquisición*/}){
+                onClick={
+                    viewModel.guardarFlorVerificada(flor)
+                    onSaveSuccess()
+                }){
                 Image(
                     painter = painterResource(id = R.drawable.save_icon),
                     contentDescription = "Guardar nueva adquisición",
@@ -188,20 +204,4 @@ fun VerifyPage(
             }
         }
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun VerifyPagePreview(){
-    VerifyPage(datos = Flor(
-        nombreCientifico = "Rosa",
-        nombreComun = "Rosa común",
-        familia = "Rosáceas",
-        exposicionSolar = TipoExposicion.SOL_DIRECTO,
-        frecuenciaRiego = 1,
-        estacionPreferida = TipoEstacion.PRIMAVERA,
-        alcalinidadPreferida = "Media",
-        colores = listOf(TipoColor.ROJO, TipoColor.AMARILLO),
-        esToxica = false
-    ), onBackClick = {}, onSaveClick = {})
 }

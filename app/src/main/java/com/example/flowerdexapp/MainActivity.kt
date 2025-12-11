@@ -147,9 +147,10 @@ fun MainNavigationWrapper(viewModel: FlowerViewModel) {
                 route = Screen.Register.route
             ) {
                 RegisterPage(
+                    viewModel = viewModel,
                     onBackClick = { navController.popBackStack() },
-                    onScanClick = { navController.navigate(Screen.Verify.route) }
-                ) //TODO: Agregar acción para escaneo
+                    onScanSuccess = { navController.navigate(Screen.Verify.route) }
+                )
             }
 
             // RUTA 5: Verificación de nueva flor (Verify)
@@ -157,19 +158,11 @@ fun MainNavigationWrapper(viewModel: FlowerViewModel) {
                 route = Screen.Verify.route
             ) {
                 VerifyPage(
-                    datos = Flor(
-                        nombreCientifico = "Rosa",
-                nombreComun = "Rosa común",
-                familia = "Rosáceas",
-                exposicionSolar = TipoExposicion.SOL_DIRECTO,
-                frecuenciaRiego = 1,
-                estacionPreferida = TipoEstacion.PRIMAVERA,
-                alcalinidadPreferida = "Media",
-                colores = listOf(TipoColor.ROJO, TipoColor.AMARILLO),
-                esToxica = false
-                ),
+                    viewModel = viewModel,
                     onBackClick = { navController.popBackStack() },
-                    onSaveClick = { navController.navigate(Screen.Index.route) }
+                    onSaveSuccess = { navController.navigate(Screen.Index.route){
+                        popUpTo(Screen.Home.route) { inclusive = false }
+                    } }
                 )
 
             }
