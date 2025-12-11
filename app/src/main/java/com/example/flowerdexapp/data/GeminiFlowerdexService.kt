@@ -10,7 +10,7 @@ import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-private const val API_KEY = "" //TODO: Usar un archivo de propiedades para obtener de manera segura mi API KEY
+private const val API_KEY = "AIzaSyC-Y4rkEevHlBz1NvRrpAnyK2egHLb9AOw" //TODO: Usar un archivo de propiedades para obtener de manera segura mi API KEY
 
 class GeminiFlowerdexService {
 

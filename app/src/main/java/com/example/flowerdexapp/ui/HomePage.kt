@@ -41,8 +41,11 @@ fun HomePage(
                 .fillMaxWidth(),
             contentAlignment = Alignment.Center
         ){
-            // Este debería ser el logo, sin embargo, dado que aún no fue diseñado, se añadirá solo un texto de prueba
-            Text(text = "Flowerdex", style = MaterialTheme.typography.displayMedium)
+            Image(
+                painter = painterResource(id = R.drawable.flowerdex_icon),
+                contentDescription = "Logo Flowerdex",
+                modifier = Modifier.size(200.dp)
+            )
         }
 
         Column(
