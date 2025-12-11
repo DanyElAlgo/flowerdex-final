@@ -23,6 +23,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.example.flowerdexapp.R
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 
 @Composable
@@ -35,7 +38,6 @@ fun FlowerPage(
     val flor = florState
 
     if (flor == null) {
-//        TODO: Mejorar la pantalla de cargado
         Text("Cargando...", modifier = modifier.padding(16.dp))
         return
     }
@@ -62,8 +64,12 @@ fun FlowerPage(
                     text = flor.nombreCientifico,
                     style = MaterialTheme.typography.titleMedium
                 )
-                Text( // TODO: Obtener solo el DD/MM/AAAA de la variable fechaAvistameinto
-                    text = "Fecha obtención: ${flor.fechaAvistamiento ?: "Desconocida"}",
+                Text(
+                    text = "Fecha obtención: ${
+                        flor.fechaAvistamiento?.let { millis ->
+                            SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(Date(millis))
+                        } ?: "Desconocida"
+                    }",
                     style = MaterialTheme.typography.labelSmall
                 )
             }

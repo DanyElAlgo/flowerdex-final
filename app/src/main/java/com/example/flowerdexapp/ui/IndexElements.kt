@@ -23,10 +23,14 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextOverflow.Companion.Ellipsis
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.example.flowerdexapp.R
 import com.example.flowerdexapp.data.Flor
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 
 @Composable
@@ -86,7 +90,11 @@ fun FlowerListItem(
                     style = MaterialTheme.typography.bodyMedium
                 )
                 Text(
-                    text = "Fecha obtención: ${flower.fechaAvistamiento ?: "Desconocida"}",
+                    text = "Fecha obtención: ${
+                        flower.fechaAvistamiento?.let { millis ->
+                            SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(Date(millis))
+                        } ?: "Desconocida"
+                    }",
                     style = MaterialTheme.typography.bodySmall
                 )
             }
@@ -111,11 +119,15 @@ fun FlowerBlockItem(flower: Flor,
         )
         Text(
             text = flower.nombreComun,
-            style = MaterialTheme.typography.bodyLarge
+            style = MaterialTheme.typography.bodyLarge,
+            maxLines = 1,
+            overflow = Ellipsis
         )
         Text(
             text = flower.nombreCientifico,
-            style = MaterialTheme.typography.bodyMedium
+            style = MaterialTheme.typography.bodyMedium,
+            maxLines = 1,
+            overflow = Ellipsis
         )
     }
 }
