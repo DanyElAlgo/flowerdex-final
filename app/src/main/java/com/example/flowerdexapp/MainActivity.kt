@@ -115,7 +115,12 @@ fun MainNavigationWrapper(viewModel: FlowerViewModel) {
                     viewModel = viewModel,
                     onFlowerClick = { flowerId ->
                         navController.navigate(Screen.Detail.createRoute(flowerId))
-                    }
+                    },
+                    onRegisterClick = { navController.navigate(Screen.Register.route){
+                        popUpTo(Screen.Home.route) {
+                            inclusive = false
+                        }
+                    } }
                 )
             }
 

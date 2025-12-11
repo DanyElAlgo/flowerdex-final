@@ -14,6 +14,7 @@ import com.example.flowerdexapp.data.TipoColor
 import com.example.flowerdexapp.data.TipoEstacion
 import com.example.flowerdexapp.data.TipoExposicion
 import com.example.flowerdexapp.utils.ImageUtils
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -63,6 +64,10 @@ class FlowerViewModel(
                 _scanState.value = ScanUiState.Error("No se pudo identificar la flor. Intenta de nuevo.")
             }
         }
+    }
+
+    fun obtenerFlor(id: Long): Flow<Flor?> {
+        return dao.obtenerFlorPorId(id)
     }
 
     fun guardarFlorVerificada(flor: Flor) {

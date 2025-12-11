@@ -11,8 +11,8 @@ interface FlorDao {
     @Query("SELECT * FROM flores ORDER BY nombreComun ASC")
     fun obtenerTodas(): Flow<List<Flor>>
 
-//    @Query("SELECT * FROM flores WHERE id = :id")
-//    suspend fun obtenerPorId(id: Long): Flor?
+    @Query("SELECT * FROM flores WHERE id = :id")
+    suspend fun obtenerPorId(id: Long): Flor?
 
     @Query("SELECT * FROM flores WHERE id = :id")
     fun obtenerFlorPorId(id: Long): Flow<Flor?>
