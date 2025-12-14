@@ -92,22 +92,24 @@ fun SmallInfoElement(
 
 @Composable
 fun ImageElement(
-    imageUri: String?,
+    imageUri: Any?,
     modifier: Modifier = Modifier,
-    sizeDp: Int = 200,
+    sizeDp: Int? = null, // si el tamaño es null, se usará el del padre
     borderRadiusDp: Int = 12,
     borderWidthDp: Int = 2
 ) {
+    val shape = RoundedCornerShape(borderRadiusDp.dp)
+
     Box(
-        modifier = modifier
-            .fillMaxWidth()
-            .aspectRatio(1f),
+        modifier = modifier.then(
+            if(sizeDp != null) Modifier.size(sizeDp.dp) else Modifier
+        ),
         contentAlignment = Alignment.Center
     ) {
         Box(
             modifier = Modifier
-                .size(sizeDp.dp)
-                .clip(RoundedCornerShape(borderRadiusDp.dp))
+                .clip(shape)
+                .matchParentSize()
         ) {
             if(imageUri != null) {
                 AsyncImage(
@@ -122,15 +124,14 @@ fun ImageElement(
                 Image(
                     painter = painterResource(id = R.drawable.placeholder),
                     contentDescription = "Placeholder",
+                    contentScale = ContentScale.Crop,
                     modifier = Modifier.matchParentSize(),
                 )
             }
             Box(
                 modifier = Modifier
                     .matchParentSize()
-                    .border(borderWidthDp.dp,
-                        Color.Black,
-                        RoundedCornerShape(borderRadiusDp.dp))
+                    .border(borderWidthDp.dp, Color.Black, shape)
             )
         }
     }

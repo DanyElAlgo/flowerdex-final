@@ -103,22 +103,12 @@ fun RegisterPage(
         Column(
             modifier = Modifier.padding(16.dp)
         ) {
-            Box(modifier = Modifier.fillMaxWidth().aspectRatio(1f)) {
-                if (imageUri != null) {
-                    AsyncImage(
-                        model = imageUri,
-                        contentDescription = "Foto seleccionada",
-                        modifier = Modifier.matchParentSize(),
-                        contentScale = ContentScale.Crop
-                    )
-                } else {
-                    Image(
-                        painter = painterResource(id = R.drawable.placeholder),
-                        contentDescription = "Placeholder",
-                        modifier = Modifier.matchParentSize(),
-                    )
-                }
-            }
+            ImageElement(
+                imageUri = imageUri,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .aspectRatio(1f)
+            )
 
             Spacer(modifier = Modifier.size(16.dp))
 

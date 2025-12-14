@@ -67,10 +67,8 @@ fun VerifyPage(
                 .padding(16.dp),
             horizontalArrangement = Arrangement.Start
         ) {
-            AsyncImage(
-                model = imageUri,
-                contentDescription = "Imagen de la flor",
-                contentScale = ContentScale.Crop,
+            ImageElement(
+                imageUri = imageUri,
                 modifier = Modifier
                     .size(136.dp)
                     .aspectRatio(1f)
