@@ -90,7 +90,8 @@ fun HomePage(
             Text(
                 text = "Version 1.0.0",
                 modifier = Modifier.padding(bottom = 16.dp),
-                style = MaterialTheme.typography.bodySmall
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
     }
