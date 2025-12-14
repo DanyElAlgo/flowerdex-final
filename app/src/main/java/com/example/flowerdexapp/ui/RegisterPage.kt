@@ -91,7 +91,6 @@ fun RegisterPage(
     LaunchedEffect(scanState) {
         when (scanState) {
             is ScanUiState.Success -> {
-                viewModel.resetScanState() // TODO: CORREGIR
                 onScanSuccess()
             }
             is ScanUiState.Error -> {
