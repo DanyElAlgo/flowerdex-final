@@ -18,12 +18,14 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -144,17 +146,35 @@ fun RegisterPage(
                     modifier = Modifier.fillMaxWidth()
                 )
                 if (showCameraPermissionDeniedDialog) {
-                    androidx.compose.material3.AlertDialog(
+                    AlertDialog(
                         onDismissRequest = { showCameraPermissionDeniedDialog = false },
                         confirmButton = {
-                            androidx.compose.material3.TextButton(onClick = { showCameraPermissionDeniedDialog = false }) {
-                                Text("OK")
+                            TextButton(
+                                onClick = {
+                                    showCameraPermissionDeniedDialog = false
+                                    val intent = android.content.Intent(
+                                        android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS
+                                    ).apply {
+                                        data = Uri.fromParts("package", context.packageName, null)
+                                    }
+                                    context.startActivity(intent)
+                                }
+                            ) {
+                                Text("Ir a Ajustes")
+                            }
+                        },
+                        dismissButton = {
+                            TextButton(
+                                onClick = { showCameraPermissionDeniedDialog = false }
+                            ) {
+                                Text("Cancelar")
                             }
                         },
                         title = { Text("Permiso requerido") },
-                        text = { Text("La aplicación necesita acceso a la cámara para tomar fotos de las flores.") }
+                        text = { Text("La aplicación necesita acceso a la cámara para tomar fotos. Por favor, habilítalo manualmente en los ajustes.") }
                     )
                 }
+
                 ButtonElement(
                     text = "Galería",
                     textStyle = MaterialTheme.typography.titleMedium,
