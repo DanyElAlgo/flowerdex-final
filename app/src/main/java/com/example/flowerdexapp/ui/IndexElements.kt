@@ -1,73 +1,22 @@
 package com.example.flowerdexapp.ui
 
-import android.widget.GridLayout
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow.Companion.Ellipsis
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
-import com.example.flowerdexapp.R
 import com.example.flowerdexapp.data.Flor
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
-
-
-@Composable
-fun ImageExample(
-    imageUri: String?,
-    modifier: Modifier = Modifier,
-    sizeDp: Int = 200,
-    borderWidthDp: Int = 2
-) {
-    val shape = RoundedCornerShape(12.dp)
-    Box(
-        modifier = modifier
-            .fillMaxWidth()
-            .aspectRatio(1f),
-        contentAlignment = Alignment.Center
-    ) {
-        Box(
-            modifier = Modifier
-                .size(sizeDp.dp)
-                .clip(shape)
-        ) {
-            AsyncImage(
-                model = imageUri,
-                contentDescription = "Imagen",
-                placeholder = painterResource(id = R.drawable.placeholder),
-                error = painterResource(id = R.drawable.placeholder),
-                contentScale = ContentScale.Crop,
-                modifier = Modifier.matchParentSize()
-            )
-            Box(
-                modifier = Modifier
-                    .matchParentSize()
-                    .border(borderWidthDp.dp, Color.Black, shape)
-            )
-        }
-    }
-}
 
 @Composable
 fun FlowerListItem(
@@ -76,9 +25,11 @@ fun FlowerListItem(
     modifier: Modifier = Modifier) {
     Column(modifier = modifier.clickable{onClick()}) {
         Row(modifier = Modifier.padding(16.dp)) {
-            ImageExample(
+            ImageElement(
                 imageUri = flower.fotoUri,
-                modifier = Modifier.width(56.dp)
+                modifier = Modifier.size(56.dp),
+                borderRadiusDp = 8,
+                borderThicknessDp = 1
             )
             Column(modifier = Modifier.padding(start = 16.dp)) {
                 Text(
@@ -113,9 +64,11 @@ fun FlowerBlockItem(flower: Flor,
             .clickable { onClick() }
             .padding(8.dp)
     ) {
-        ImageExample(
+        ImageElement(
             imageUri = flower.fotoUri,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            borderRadiusDp = 12,
+            borderThicknessDp = 2
         )
         Text(
             text = flower.nombreComun,

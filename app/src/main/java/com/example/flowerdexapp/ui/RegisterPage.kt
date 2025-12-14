@@ -103,22 +103,12 @@ fun RegisterPage(
         Column(
             modifier = Modifier.padding(16.dp)
         ) {
-            Box(modifier = Modifier.fillMaxWidth().aspectRatio(1f)) {
-                if (imageUri != null) {
-                    AsyncImage(
-                        model = imageUri,
-                        contentDescription = "Foto seleccionada",
-                        modifier = Modifier.matchParentSize(),
-                        contentScale = ContentScale.Crop
-                    )
-                } else {
-                    Image(
-                        painter = painterResource(id = R.drawable.placeholder),
-                        contentDescription = "Placeholder",
-                        modifier = Modifier.matchParentSize(),
-                    )
-                }
-            }
+            ImageElement(
+                imageUri = imageUri,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .aspectRatio(1f)
+            )
 
             Spacer(modifier = Modifier.size(16.dp))
 
@@ -129,14 +119,9 @@ fun RegisterPage(
                     .padding(vertical = 16.dp, horizontal = 32.dp)
                     .fillMaxWidth()
             ) {
-                Button(
-                    enabled = isEnabled,
-                    border = ButtonDefaults.outlinedButtonBorder,
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.surfaceVariant,
-                        contentColor = MaterialTheme.colorScheme.onSurfaceVariant
-                    ),
-                    modifier = Modifier.fillMaxWidth(),
+                ButtonElement(
+                    text = "Cámara",
+                    textStyle = MaterialTheme.typography.titleMedium,
                     onClick = {
                         val permission = android.Manifest.permission.CAMERA
                         val permissionCheck = androidx.core.content.ContextCompat.checkSelfPermission(
@@ -149,16 +134,12 @@ fun RegisterPage(
                         } else {
                             cameraPermissionLauncher.launch(permission)
                         }
-                    }) {
-                    Image(
-                        painter = painterResource(id = R.drawable.add_a_photo),
-                        contentDescription = null,
-                        modifier = Modifier.size(24.dp),
-                        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurfaceVariant)
-                    )
-                    Spacer(modifier = Modifier.width(11.dp))
-                    Text(text = "Cámara", style = MaterialTheme.typography.titleMedium)
-                }
+                    },
+                    enabled = isEnabled,
+                    icon = R.drawable.add_a_photo,
+                    iconSize = 24,
+                    modifier = Modifier.fillMaxWidth()
+                )
                 if (showCameraPermissionDeniedDialog) {
                     androidx.compose.material3.AlertDialog(
                         onDismissRequest = { showCameraPermissionDeniedDialog = false },
@@ -171,41 +152,28 @@ fun RegisterPage(
                         text = { Text("La aplicación necesita acceso a la cámara para tomar fotos de las flores.") }
                     )
                 }
-                Button(
-                    enabled = isEnabled,
-                    border = ButtonDefaults.outlinedButtonBorder,
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.surfaceVariant,
-                        contentColor = MaterialTheme.colorScheme.onSurfaceVariant
-                    ),
-                    modifier = Modifier.fillMaxWidth(),
+                ButtonElement(
+                    text = "Galería",
+                    textStyle = MaterialTheme.typography.titleMedium,
                     onClick = {
                         galleryLauncher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
-                    }) {
-                    Image(
-                        painter = painterResource(id = R.drawable.image_arrow_up),
-                        contentDescription = null,
-                        modifier = Modifier.size(24.dp),
-                        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurfaceVariant)
-                    )
-                    Spacer(modifier = Modifier.width(12.dp))
-                    Text(text = "Galería", style = MaterialTheme.typography.titleMedium)
-                }
+                    },
+                    enabled = isEnabled,
+                    icon = R.drawable.image_arrow_up,
+                    iconSize = 24,
+                    modifier = Modifier.fillMaxWidth()
+                )
             }
 
-            Button(
-                modifier = Modifier.fillMaxWidth(),
+            ButtonElement(
+                text = "Escanear",
+                textStyle = MaterialTheme.typography.titleMedium,
+                onClick = { viewModel.escanearFlor() },
                 enabled = isEnabled && imageUri != null,
-                onClick = { viewModel.escanearFlor() }
-            ) {
-                Image(
-                    painter = painterResource(id = R.drawable.image_search),
-                    contentDescription = null,
-                    modifier = Modifier.size(32.dp)
-                )
-                Spacer(modifier = Modifier.width(16.dp))
-                Text(text = "Escanear", style = MaterialTheme.typography.headlineSmall)
-            }
+                icon = R.drawable.image_search,
+                iconSize = 24,
+                modifier = Modifier.fillMaxWidth()
+            )
         }
 
         if (scanState is ScanUiState.Loading) {

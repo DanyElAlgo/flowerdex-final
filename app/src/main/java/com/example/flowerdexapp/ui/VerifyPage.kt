@@ -67,10 +67,8 @@ fun VerifyPage(
                 .padding(16.dp),
             horizontalArrangement = Arrangement.Start
         ) {
-            AsyncImage(
-                model = imageUri,
-                contentDescription = "Imagen de la flor",
-                contentScale = ContentScale.Crop,
+            ImageElement(
+                imageUri = imageUri,
                 modifier = Modifier
                     .size(136.dp)
                     .aspectRatio(1f)
@@ -122,46 +120,31 @@ fun VerifyPage(
             )
             Spacer(modifier = Modifier.size(8.dp))
             Column() {
-                Column(modifier = Modifier.padding(vertical = 8.dp)) {
-                    Text(
-                        text = "Familia:",
-                        style = MaterialTheme.typography.bodyLarge
-                    )
-                    Text(
-                        text = flor.familia,
-                        style = MaterialTheme.typography.bodyMedium
-                    )
-                }
-                Column(modifier = Modifier.padding(vertical = 8.dp)) {
-                    Text(
-                        text = "Estación preferida:",
-                        style = MaterialTheme.typography.bodyLarge
-                    )
-                    Text(
-                        text = flor.estacionPreferida.descripcion,
-                        style = MaterialTheme.typography.bodyMedium
-                    )
-                }
-                Column(modifier = Modifier.padding(vertical = 8.dp)) {
-                    Text(
-                        text = "Exposición al sol preferida:",
-                        style = MaterialTheme.typography.bodyLarge
-                    )
-                    Text(
-                        text = flor.exposicionSolar.descripcion,
-                        style = MaterialTheme.typography.bodyMedium
-                    )
-                }
-                Column(modifier = Modifier.padding(vertical = 8.dp)) {
-                    Text(
-                        text = "Alcalinidad preferida:",
-                        style = MaterialTheme.typography.bodyLarge
-                    )
-                    Text(
-                        text = flor.alcalinidadPreferida,
-                        style = MaterialTheme.typography.bodyMedium
-                    )
-                }
+                SmallInfoElement(
+                    title = "Familia:",
+                    info = flor.familia
+                )
+                SmallInfoElement(
+                    title = "Colores:",
+                    info = flor.colores.joinToString(", ") { it.descripcion }
+                )
+                SmallInfoElement(
+                    title = "Estación preferida:",
+                    info = flor.estacionPreferida.descripcion
+                )
+                SmallInfoElement(
+                    title = "Exposición al sol preferida:",
+                    info = flor.exposicionSolar.descripcion
+                )
+                SmallInfoElement(
+                    title = "Tipo de suelo / alcalinidad preferida:",
+                    info = flor.alcalinidadPreferida
+                )
+                SmallInfoElement(
+                    title = "Toxicidad:",
+                    info = if (flor.esToxica) "Tóxica" else "No tóxica",
+                    dangerous = flor.esToxica
+                )
             }
         }
         Column( // Dedicado a los botones de cancelado y guardado
@@ -169,39 +152,27 @@ fun VerifyPage(
                 .fillMaxWidth()
                 .padding(16.dp)
         ){
-            Button(
-                border = ButtonDefaults.outlinedButtonBorder,
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.surfaceVariant,
-                    contentColor = MaterialTheme.colorScheme.onSurfaceVariant
-                ),
-                modifier = Modifier.fillMaxWidth(),
-                onClick= { onBackClick() }) {
-                Image(
-                    painter = painterResource(id = R.drawable.undo_icon),
-                    contentDescription = "Volver",
-                    modifier = Modifier.size(24.dp),
-                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurfaceVariant)
-                )
-                Spacer(modifier = Modifier.width(12.dp))
-                Text(text="Cancelar",
-                    style = MaterialTheme.typography.titleMedium)
-            }
-            Button(
-                modifier = Modifier.fillMaxWidth(),
-                onClick={
+            ButtonElement(
+                text = "Cancelar",
+                textStyle = MaterialTheme.typography.titleMedium,
+                onClick = { onBackClick() },
+                modifier = Modifier
+                    .fillMaxWidth(),
+                icon = R.drawable.undo_icon,
+                iconSize = 24
+            )
+            ButtonElement(
+                text = "Guardar",
+                textStyle = MaterialTheme.typography.titleMedium,
+                onClick = {
                     viewModel.guardarFlorVerificada(flor)
                     onSaveSuccess()
-                }){
-                Image(
-                    painter = painterResource(id = R.drawable.save_icon),
-                    contentDescription = "Guardar nueva adquisición",
-                    modifier = Modifier.size(24.dp)
-                )
-                Spacer(modifier = Modifier.width(12.dp))
-                Text(text="Guardar",
-                    style = MaterialTheme.typography.titleMedium)
-            }
+                },
+                modifier = Modifier
+                    .fillMaxWidth(),
+                icon = R.drawable.save_icon,
+                iconSize = 24
+            )
         }
     }
 }
