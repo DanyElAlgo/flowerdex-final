@@ -30,6 +30,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
@@ -56,15 +57,25 @@ fun VerifyPage(
     var showExitDialog by remember { mutableStateOf(false) }
 
     val onBackAction = {
+        viewModel.resetScanState()
         showExitDialog = true
     }
     BackHandler(enabled = true) {
-        onBackAction()
+        showExitDialog = true
     }
 
     if(scanState !is ScanUiState.Success){
-        Text("Error: No hay datos de escaneo para verificar.")
-        Button(onClick = onBackClick) { Text("Volver") }
+        Column(
+            modifier = modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ){
+            Text("Error: No hay datos de escaneo para verificar.")
+            Button(onClick = onBackClick) { Text("Volver") }
+
+        }
         return
     }
 
@@ -83,7 +94,7 @@ fun VerifyPage(
                     TextButton(
                         onClick = {
                             showExitDialog = false
-                            onBackClick()
+                            onBackAction()
                         }
                     ) {
                         Text("Salir")
@@ -194,7 +205,7 @@ fun VerifyPage(
             ButtonElement(
                 text = "Cancelar",
                 textStyle = MaterialTheme.typography.titleMedium,
-                onClick = { onBackClick() },
+                onClick = { onBackAction() },
                 modifier = Modifier
                     .fillMaxWidth(),
                 icon = R.drawable.undo_icon,
