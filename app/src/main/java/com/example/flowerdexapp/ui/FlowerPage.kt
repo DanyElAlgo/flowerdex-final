@@ -90,46 +90,34 @@ fun FlowerPage(
             )
             Spacer(modifier = Modifier.size(8.dp))
             Column() {
-                Column(modifier = Modifier.padding(vertical = 8.dp)) {
-                    Text(
-                        text = "Familia:",
-                        style = MaterialTheme.typography.bodyLarge
-                    )
-                    Text(
-                        text = flor.familia,
-                        style = MaterialTheme.typography.bodyMedium
-                    )
-                }
-                Column(modifier = Modifier.padding(vertical = 8.dp)) {
-                    Text(
-                        text = "Estación preferida:",
-                        style = MaterialTheme.typography.bodyLarge
-                    )
-                    Text(
-                        text = flor.estacionPreferida.descripcion,
-                        style = MaterialTheme.typography.bodyMedium
-                    )
-                }
-                Column(modifier = Modifier.padding(vertical = 8.dp)) {
-                    Text(
-                        text = "Exposición al sol preferida:",
-                        style = MaterialTheme.typography.bodyLarge
-                    )
-                    Text(
-                        text = flor.exposicionSolar.descripcion,
-                        style = MaterialTheme.typography.bodyMedium
-                    )
-                }
-                Column(modifier = Modifier.padding(vertical = 8.dp)) {
-                    Text(
-                        text = "Alcalinidad preferida:",
-                        style = MaterialTheme.typography.bodyLarge
-                    )
-                    Text(
-                        text = flor.alcalinidadPreferida,
-                        style = MaterialTheme.typography.bodyMedium
-                    )
-                }
+                SmallInfoElement(
+                    title = "Familia:",
+                    info = flor.familia
+                )
+                SmallInfoElement(
+                    title = "Colores:",
+                    info = flor.colores.joinToString(", ") { it.descripcion }
+                )
+                SmallInfoElement(
+                    title = "Estación preferida:",
+                    info = flor.estacionPreferida.descripcion
+                )
+                SmallInfoElement(
+                    title = "Exposición al sol preferida:",
+                    info = flor.exposicionSolar.descripcion
+                )
+                SmallInfoElement(
+                    title = "Tipo de suelo / alcalinidad preferida:",
+                    info = flor.alcalinidadPreferida
+                )
+                SmallInfoElement(
+                    title = "Toxicidad:",
+                    info = if (flor.esToxica) "Tóxica" else "No tóxica",
+                    dangerous = flor.esToxica,
+                    hyperlink = if (flor.esToxica)
+                                "https://www.gardenia.net/guide/poisonous-flowers-plants-toxic-beauty-in-your-garden"
+                                else null
+                )
             }
         }
     }

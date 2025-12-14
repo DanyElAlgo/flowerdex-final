@@ -2,6 +2,7 @@ package com.example.flowerdexapp.ui
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -19,8 +20,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
@@ -50,7 +53,7 @@ fun ButtonElement(
         Text(
             text = text,
             style = textStyle,
-            fontSize = if(fontSize != null) fontSize.sp else textStyle.fontSize
+            fontSize = fontSize?.sp ?: textStyle.fontSize
         )
     }
 }
@@ -59,17 +62,31 @@ fun ButtonElement(
 fun SmallInfoElement(
     title: String,
     info: String,
-    modifier: Modifier = Modifier
+    dangerous: Boolean = false,
+    hyperlink: String? = null,
 ){
-    Column(modifier = modifier.padding(vertical = 8.dp)) {
+    val uriHandler = LocalUriHandler.current
+    Column(modifier = Modifier.padding(vertical = 8.dp)) {
         Text(
             text = title,
             style = MaterialTheme.typography.bodyLarge
         )
         Text(
             text = info,
-            style = MaterialTheme.typography.bodyMedium
+            style = MaterialTheme.typography.bodyMedium,
+            color = if(dangerous) Color.Red else MaterialTheme.colorScheme.onBackground
         )
+        if(hyperlink != null){
+            Text(
+                text = "Más información.",
+                style = MaterialTheme.typography.bodyMedium,
+                color = Color.Blue,
+                textDecoration = TextDecoration.Underline,
+                modifier = Modifier.clickable{
+                    uriHandler.openUri(hyperlink)
+                }
+            )
+        }
     }
 }
 
