@@ -56,38 +56,30 @@ fun HomePage(
             horizontalAlignment = Alignment.CenterHorizontally
         ){
             // Button 1: Registrar
-            Button(
+            ButtonElement(
+                text = "Registrar",
+                textStyle = MaterialTheme.typography.bodyLarge,
                 onClick = { onRegisterClick() },
                 modifier = Modifier
                     .fillMaxWidth(0.7f)
-                    .height(60.dp)
-            ) {
-                Image(
-                    painter = painterResource(id = R.drawable.photo_camera),
-                    contentDescription = "Registrar",
-                    modifier = Modifier.size(28.dp)
-                )
-                Spacer(modifier = Modifier.width(12.dp))
-                Text(text = "Registrar", fontSize = 18.sp)
-            }
+                    .height(60.dp),
+                icon = R.drawable.photo_camera,
+                iconSize = 28
+            )
 
             Spacer(modifier = Modifier.height(24.dp))
 
             // Button 2: Enciclopedia
-            Button(
+            ButtonElement(
+                text = "Enciclopedia",
+                textStyle = MaterialTheme.typography.bodyLarge,
                 onClick = { onIndexClick() },
                 modifier = Modifier
                     .fillMaxWidth(0.7f)
-                    .height(60.dp)
-            ) {
-                Image(
-                    painter = painterResource(id = R.drawable.menu_book),
-                    contentDescription = "Enciclopedia",
-                    modifier = Modifier.size(28.dp)
-                )
-                Spacer(modifier = Modifier.width(12.dp))
-                Text(text = "Enciclopedia", fontSize = 18.sp)
-            }
+                    .height(60.dp),
+                icon = R.drawable.menu_book,
+                iconSize = 28
+            )
         }
         Box(
             modifier = Modifier

@@ -90,15 +90,14 @@ fun IndexPageContent(
                         }
                     }
             )
-            Button(onClick = onRegisterClick) {
-                Image(
-                    painter = painterResource(id = R.drawable.photo_camera),
-                    contentDescription = "Agregar flor",
-                    modifier = Modifier.size(24.dp)
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(text = "Agregar flor")
-            }
+            ButtonElement(
+                text = "Agregar flor",
+                textStyle = MaterialTheme.typography.bodyLarge,
+                onClick = onRegisterClick,
+                icon = R.drawable.photo_camera,
+                spacing = 8,
+                iconSize = 24
+            )
         }
         return
     }
