@@ -58,7 +58,7 @@ fun VerifyPage(
 
     val onBackAction = {
         viewModel.resetScanState()
-        showExitDialog = true
+        onBackClick()
     }
     BackHandler(enabled = true) {
         showExitDialog = true
@@ -74,7 +74,6 @@ fun VerifyPage(
         ){
             Text("Error: No hay datos de escaneo para verificar.")
             Button(onClick = onBackClick) { Text("Volver") }
-
         }
         return
     }
@@ -205,7 +204,7 @@ fun VerifyPage(
             ButtonElement(
                 text = "Cancelar",
                 textStyle = MaterialTheme.typography.titleMedium,
-                onClick = { onBackAction() },
+                onClick = { showExitDialog },
                 modifier = Modifier
                     .fillMaxWidth(),
                 icon = R.drawable.undo_icon,
