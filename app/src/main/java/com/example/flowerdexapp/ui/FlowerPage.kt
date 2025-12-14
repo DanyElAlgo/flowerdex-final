@@ -45,13 +45,13 @@ fun FlowerPage(
     Column(modifier = modifier
         .fillMaxSize()
         .verticalScroll(scrollState)) {
-        AsyncImage(
-            model = flor.fotoUri,
-            contentDescription = "Imagen",
-            placeholder = painterResource(id = R.drawable.placeholder),
-            error = painterResource(id = R.drawable.placeholder),
-            contentScale = ContentScale.Crop,
-            modifier = Modifier.fillMaxWidth().aspectRatio(1f)
+        ImageElement(
+            imageUri = flor.fotoUri,
+            modifier = Modifier
+                .fillMaxWidth()
+                .aspectRatio(1f),
+            borderRadiusDp = 0,
+            borderThicknessDp = 0
         )
         Spacer(modifier = Modifier.size(16.dp))
         Column(modifier = Modifier.padding(start = 16.dp)) {

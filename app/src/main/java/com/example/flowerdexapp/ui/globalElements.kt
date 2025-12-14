@@ -6,8 +6,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -96,7 +94,7 @@ fun ImageElement(
     modifier: Modifier = Modifier,
     sizeDp: Int? = null, // si el tamaño es null, se usará el del padre
     borderRadiusDp: Int = 12,
-    borderWidthDp: Int = 2
+    borderThicknessDp: Int = 2
 ) {
     val shape = RoundedCornerShape(borderRadiusDp.dp)
 
@@ -131,7 +129,7 @@ fun ImageElement(
             Box(
                 modifier = Modifier
                     .matchParentSize()
-                    .border(borderWidthDp.dp, Color.Black, shape)
+                    .border(borderThicknessDp.dp, Color.Black, shape)
             )
         }
     }
