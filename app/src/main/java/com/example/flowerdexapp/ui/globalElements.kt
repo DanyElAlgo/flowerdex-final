@@ -5,6 +5,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.padding
@@ -70,21 +71,23 @@ fun SmallInfoElement(
             text = title,
             style = MaterialTheme.typography.bodyLarge
         )
-        Text(
-            text = info,
-            style = MaterialTheme.typography.bodyMedium,
-            color = if(dangerous) Color.Red else MaterialTheme.colorScheme.onBackground
-        )
-        if(hyperlink != null){
+        Row{
             Text(
-                text = "Más información.",
+                text = "$info ",
                 style = MaterialTheme.typography.bodyMedium,
-                color = Color.Blue,
-                textDecoration = TextDecoration.Underline,
-                modifier = Modifier.clickable{
-                    uriHandler.openUri(hyperlink)
-                }
+                color = if(dangerous) Color.Red else MaterialTheme.colorScheme.onBackground
             )
+            if(hyperlink != null){
+                Text(
+                    text = "Más información.",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = Color.Blue,
+                    textDecoration = TextDecoration.Underline,
+                    modifier = Modifier.clickable{
+                        uriHandler.openUri(hyperlink)
+                    }
+                )
+            }
         }
     }
 }

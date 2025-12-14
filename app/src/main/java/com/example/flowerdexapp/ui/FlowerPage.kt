@@ -112,7 +112,7 @@ fun FlowerPage(
                 )
                 SmallInfoElement(
                     title = "Toxicidad:",
-                    info = if (flor.esToxica) "Tóxica" else "No tóxica",
+                    info = if (flor.esToxica) "Tóxica." else "No tóxica.",
                     dangerous = flor.esToxica,
                     hyperlink = if (flor.esToxica)
                                 "https://www.gardenia.net/guide/poisonous-flowers-plants-toxic-beauty-in-your-garden"
