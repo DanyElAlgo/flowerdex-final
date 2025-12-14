@@ -152,39 +152,27 @@ fun VerifyPage(
                 .fillMaxWidth()
                 .padding(16.dp)
         ){
-            Button(
-                border = ButtonDefaults.outlinedButtonBorder,
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.surfaceVariant,
-                    contentColor = MaterialTheme.colorScheme.onSurfaceVariant
-                ),
-                modifier = Modifier.fillMaxWidth(),
-                onClick= { onBackClick() }) {
-                Image(
-                    painter = painterResource(id = R.drawable.undo_icon),
-                    contentDescription = "Volver",
-                    modifier = Modifier.size(24.dp),
-                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurfaceVariant)
-                )
-                Spacer(modifier = Modifier.width(12.dp))
-                Text(text="Cancelar",
-                    style = MaterialTheme.typography.titleMedium)
-            }
-            Button(
-                modifier = Modifier.fillMaxWidth(),
-                onClick={
+            ButtonElement(
+                text = "Cancelar",
+                textStyle = MaterialTheme.typography.titleMedium,
+                onClick = { onBackClick() },
+                modifier = Modifier
+                    .fillMaxWidth(),
+                icon = R.drawable.undo_icon,
+                iconSize = 24
+            )
+            ButtonElement(
+                text = "Guardar",
+                textStyle = MaterialTheme.typography.titleMedium,
+                onClick = {
                     viewModel.guardarFlorVerificada(flor)
                     onSaveSuccess()
-                }){
-                Image(
-                    painter = painterResource(id = R.drawable.save_icon),
-                    contentDescription = "Guardar nueva adquisición",
-                    modifier = Modifier.size(24.dp)
-                )
-                Spacer(modifier = Modifier.width(12.dp))
-                Text(text="Guardar",
-                    style = MaterialTheme.typography.titleMedium)
-            }
+                },
+                modifier = Modifier
+                    .fillMaxWidth(),
+                icon = R.drawable.save_icon,
+                iconSize = 24
+            )
         }
     }
 }
