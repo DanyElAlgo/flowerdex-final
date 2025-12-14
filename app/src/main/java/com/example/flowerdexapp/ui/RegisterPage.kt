@@ -137,7 +137,8 @@ fun RegisterPage(
                     },
                     enabled = isEnabled,
                     icon = R.drawable.add_a_photo,
-                    iconSize = 24
+                    iconSize = 24,
+                    modifier = Modifier.fillMaxWidth()
                 )
                 if (showCameraPermissionDeniedDialog) {
                     androidx.compose.material3.AlertDialog(
@@ -159,7 +160,8 @@ fun RegisterPage(
                     },
                     enabled = isEnabled,
                     icon = R.drawable.image_arrow_up,
-                    iconSize = 24
+                    iconSize = 24,
+                    modifier = Modifier.fillMaxWidth()
                 )
             }
 
@@ -169,7 +171,8 @@ fun RegisterPage(
                 onClick = { viewModel.escanearFlor() },
                 enabled = isEnabled && imageUri != null,
                 icon = R.drawable.image_search,
-                iconSize = 24
+                iconSize = 24,
+                modifier = Modifier.fillMaxWidth()
             )
         }
 
