@@ -88,7 +88,10 @@ fun RegisterPage(
 
     LaunchedEffect(scanState) {
         when (scanState) {
-            is ScanUiState.Success -> onScanSuccess()
+            is ScanUiState.Success -> {
+                viewModel.resetScanState()
+                onScanSuccess()
+            }
             is ScanUiState.Error -> {
                 Toast.makeText(context, (scanState as ScanUiState.Error).mensaje, Toast.LENGTH_LONG)
                     .show()

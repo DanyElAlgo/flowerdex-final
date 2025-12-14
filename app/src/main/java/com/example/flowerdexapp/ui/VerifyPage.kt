@@ -1,7 +1,9 @@
 package com.example.flowerdexapp.ui
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -16,13 +18,18 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
@@ -46,6 +53,14 @@ fun VerifyPage(
     modifier: Modifier = Modifier
 ) {
     val scanState by viewModel.scanState.collectAsState()
+    var showExitDialog by remember { mutableStateOf(false) }
+
+    val onBackAction = {
+        showExitDialog = true
+    }
+    BackHandler(enabled = true) {
+        onBackAction()
+    }
 
     if(scanState !is ScanUiState.Success){
         Text("Error: No hay datos de escaneo para verificar.")
@@ -58,6 +73,30 @@ fun VerifyPage(
     val imageUri = successState.imageUri
 
     var scrollState = rememberScrollState()
+    Box(modifier = Modifier.fillMaxSize()){
+        if (showExitDialog) {
+            AlertDialog(
+                onDismissRequest = { showExitDialog = false },
+                title = { Text(text = "¿Cancelar registro?") },
+                text = { Text("Si sales ahora, el escaneo tendrá que realizarse desde cero.") },
+                confirmButton = {
+                    TextButton(
+                        onClick = {
+                            showExitDialog = false
+                            onBackClick()
+                        }
+                    ) {
+                        Text("Salir")
+                    }
+                },
+                dismissButton = {
+                    TextButton(onClick = { showExitDialog = false }) {
+                        Text("Cancelar")
+                    }
+                }
+            )
+        }
+        // La identación es incorrecta, pero así no será tan exagerado el commit de GitHub
     Column(modifier = modifier
         .fillMaxSize()
         .verticalScroll(scrollState)) {
@@ -175,4 +214,5 @@ fun VerifyPage(
             )
         }
     }
+}
 }
