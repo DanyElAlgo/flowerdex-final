@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     id("com.google.devtools.ksp")
+    id("org.jetbrains.kotlin.plugin.serialization") version "2.2.21"
 }
 
 val localProperties = Properties()
@@ -80,4 +81,11 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:2.9.6")
     implementation("com.google.ai.client.generativeai:generativeai:0.9.0")
     implementation("io.coil-kt:coil-compose:2.7.0")
+
+    implementation("io.github.jan-tennert.supabase:postgrest-kt:3.2.6")
+    implementation("io.github.jan-tennert.supabase:storage-kt:3.2.6")
+    implementation("io.github.jan-tennert.supabase:gotrue-kt:2.6.1")
+    implementation("io.github.jan-tennert.supabase:compose-auth:3.2.6")
+    implementation("io.github.jan-tennert.supabase:compose-auth-ui:3.2.6")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.9.0")
 }
