@@ -7,7 +7,6 @@ CREATE TABLE flores (
     familia TEXT,
     descripcion TEXT,
     exposicion_solar TEXT,
-    frecuencia_riego INT,
     estacion_preferida TEXT,
     alcalinidad_preferida TEXT,
     colores TEXT[],

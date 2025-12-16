@@ -88,4 +88,5 @@ dependencies {
     implementation("io.github.jan-tennert.supabase:compose-auth:3.2.6")
     implementation("io.github.jan-tennert.supabase:compose-auth-ui:3.2.6")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.9.0")
+    implementation("androidx.work:work-runtime-ktx:2.11.0")
 }

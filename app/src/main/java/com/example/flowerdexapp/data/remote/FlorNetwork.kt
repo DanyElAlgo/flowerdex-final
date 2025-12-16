@@ -12,7 +12,6 @@ data class FlorNetwork(
     @SerialName("familia") val familia: String,
     @SerialName("descripcion") val descripcion: String?,
     @SerialName("es_toxica") val esToxica: Boolean,
-    @SerialName("frecuencia_riego") val frecuenciaRiego: Int,
     @SerialName("estacion_preferida") val estacionPreferida: String,
     @SerialName("alcalinidad_preferida") val alcalinidadPreferida: String,
     @SerialName("exposicion_solar") val exposicionSolar: String,

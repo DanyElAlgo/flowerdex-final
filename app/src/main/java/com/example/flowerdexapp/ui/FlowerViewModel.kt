@@ -101,7 +101,6 @@ class FlowerViewModel(
             familia = dto.familia ?: "Desconocida",
             descripcion = dto.descripcion,
             exposicionSolar = try { TipoExposicion.valueOf(dto.exposicionSolar ?: "") } catch (e: Exception) { TipoExposicion.SEMI_SOMBRA },
-            frecuenciaRiego = 1, // Failsafe, TODO: Mejorar
             estacionPreferida = try { TipoEstacion.valueOf(dto.estacionPreferida ?: "") } catch (e: Exception) { TipoEstacion.NINGUNA },
             alcalinidadPreferida = dto.alcalinidadPreferida ?: "Desconocida",
             colores = dto.colores?.mapNotNull { colorName ->

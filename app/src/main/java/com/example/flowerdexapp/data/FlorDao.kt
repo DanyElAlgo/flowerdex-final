@@ -12,14 +12,16 @@ interface FlorDao {
     fun obtenerTodas(): Flow<List<Flor>>
 
     @Query("SELECT * FROM flores WHERE id = :id")
-    suspend fun obtenerPorId(id: Long): Flor?
-
-    @Query("SELECT * FROM flores WHERE id = :id")
     fun obtenerFlorPorId(id: Long): Flow<Flor?>
 
     @Insert
     suspend fun insertar(flor: Flor)
 
-    @Delete
-    suspend fun eliminar(flor: Flor)
+    @Query("SELECT * FROM flores WHERE needsSync = 1")
+    suspend fun obtenerPendientesDeSync(): List<Flor>
+
+    @Query("UPDATE flores SET needsSync = 0 WHERE id = :id")
+    suspend fun marcarComoSincronizada(id: Long)
+
+    // TODO: Implementar función para eliminar una flor de la base de datos
 }
