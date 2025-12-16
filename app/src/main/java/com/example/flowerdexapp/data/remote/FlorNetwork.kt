@@ -5,6 +5,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class FlorNetwork(
+    val id: Long? = null,
     @SerialName("user_id") val userId: String,
     @SerialName("nombre_cientifico") val nombreCientifico: String,
     @SerialName("nombre_comun") val nombreComun: String,

@@ -25,6 +25,7 @@ import androidx.work.Constraints
 import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
+import com.example.flowerdexapp.data.FlowerRepository
 import com.example.flowerdexapp.workers.SyncWorker
 import com.example.flowerdexapp.data.SupabaseClient
 import io.github.jan.supabase.gotrue.auth
@@ -32,6 +33,7 @@ import io.github.jan.supabase.gotrue.auth
 sealed class ScanUiState {
     object Initial : ScanUiState()
     object Loading : ScanUiState()
+    object Saving : ScanUiState()
     data class Success(val florTemporal: Flor, val imageUri: Uri) : ScanUiState()
     data class Error(val mensaje: String) : ScanUiState()
 }
@@ -43,6 +45,7 @@ class FlowerViewModel(
 
     private val context = application.applicationContext
     private val geminiService = GeminiFlowerdexService()
+    private val repository = FlowerRepository(context, dao)
 
     val flores: StateFlow<List<Flor>> = dao.obtenerTodas()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
@@ -84,25 +87,18 @@ class FlowerViewModel(
     fun guardarFlorVerificada(flor: Flor) {
         val uriTemporal = (scanState.value as? ScanUiState.Success)?.imageUri ?: return
 
+        _scanState.value = ScanUiState.Saving
+
         viewModelScope.launch {
-            val user = SupabaseClient.client.auth.currentUserOrNull()
-            val userId = user?.id ?: "local_user"
+            try {
+                repository.guardarFlorOnline(flor, uriTemporal)
 
-            val rutaFinal = ImageUtils.saveImageToInternalStorage(context, uriTemporal)
+                _scanState.value = ScanUiState.Initial
+                currentPhotoUri = null
 
-            val florFinal = flor.copy(
-                userId = userId,
-                fotoUri = rutaFinal,
-                fechaAvistamiento = System.currentTimeMillis(),
-                needsSync = true
-            )
-
-            dao.insertar(florFinal)
-
-            programarSincronizacion()
-
-            _scanState.value = ScanUiState.Initial
-            currentPhotoUri = null
+            } catch (e: Exception) {
+                _scanState.value = ScanUiState.Error("Error al subir: ${e.message}. Verifica tu conexión.")
+            }
         }
     }
 
