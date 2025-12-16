@@ -84,7 +84,7 @@ class FlowerViewModel(
         return dao.obtenerFlorPorId(id)
     }
 
-    fun guardarFlorVerificada(flor: Flor) {
+    fun guardarFlorVerificada(flor: Flor, onSuccess: () -> Unit) {
         val uriTemporal = (scanState.value as? ScanUiState.Success)?.imageUri ?: return
 
         _scanState.value = ScanUiState.Saving
@@ -92,12 +92,10 @@ class FlowerViewModel(
         viewModelScope.launch {
             try {
                 repository.guardarFlorOnline(flor, uriTemporal)
-
+                onSuccess()
                 _scanState.value = ScanUiState.Initial
-                currentPhotoUri = null
-
             } catch (e: Exception) {
-                _scanState.value = ScanUiState.Error("Error al subir: ${e.message}. Verifica tu conexión.")
+                _scanState.value = ScanUiState.Error("No se pudo guardar la flor. Verifica tu conexión a internet e intenta de nuevo.")
             }
         }
     }

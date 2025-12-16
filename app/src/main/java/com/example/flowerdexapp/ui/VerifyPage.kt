@@ -21,6 +21,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -62,6 +63,21 @@ fun VerifyPage(
     }
     BackHandler(enabled = true) {
         showExitDialog = true
+    }
+
+    if (scanState is ScanUiState.Saving) {
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                CircularProgressIndicator()
+                Spacer(modifier = Modifier.height(16.dp))
+                Text("Subiendo flor a la nube...")
+                Text("Por favor espera", style = MaterialTheme.typography.bodySmall)
+            }
+        }
+        return
     }
 
     if(scanState !is ScanUiState.Success){
@@ -214,8 +230,9 @@ fun VerifyPage(
                 text = "Guardar",
                 textStyle = MaterialTheme.typography.titleMedium,
                 onClick = {
-                    viewModel.guardarFlorVerificada(flor)
-                    onSaveSuccess()
+                    viewModel.guardarFlorVerificada(flor) {
+                        onSaveSuccess()
+                    }
                 },
                 modifier = Modifier
                     .fillMaxWidth(),
