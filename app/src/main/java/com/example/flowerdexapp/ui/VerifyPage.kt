@@ -58,7 +58,7 @@ fun VerifyPage(
 
     val onBackAction = {
         viewModel.resetScanState()
-        showExitDialog = true
+        onBackClick()
     }
     BackHandler(enabled = true) {
         showExitDialog = true
@@ -205,7 +205,7 @@ fun VerifyPage(
             ButtonElement(
                 text = "Cancelar",
                 textStyle = MaterialTheme.typography.titleMedium,
-                onClick = { onBackAction() },
+                onClick = { showExitDialog = true },
                 modifier = Modifier
                     .fillMaxWidth(),
                 icon = R.drawable.undo_icon,
