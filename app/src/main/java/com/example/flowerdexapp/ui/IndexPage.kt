@@ -173,7 +173,7 @@ fun IndexPagePreviewEmpty() {
         onRegisterClick = {}
     )
 }
-
+/*
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun IndexPagePreviewPopulated() {
@@ -274,3 +274,4 @@ fun IndexPagePreviewPopulated() {
         onRegisterClick = {}
     )
 }
+*/

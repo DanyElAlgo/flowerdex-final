@@ -21,6 +21,13 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import androidx.work.Constraints
+import androidx.work.NetworkType
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
+import com.example.flowerdexapp.workers.SyncWorker
+import com.example.flowerdexapp.data.SupabaseClient
+import io.github.jan.supabase.gotrue.auth
 
 sealed class ScanUiState {
     object Initial : ScanUiState()
@@ -78,15 +85,37 @@ class FlowerViewModel(
         val uriTemporal = (scanState.value as? ScanUiState.Success)?.imageUri ?: return
 
         viewModelScope.launch {
+            val user = SupabaseClient.client.auth.currentUserOrNull()
+            val userId = user?.id ?: "local_user"
+
             val rutaFinal = ImageUtils.saveImageToInternalStorage(context, uriTemporal)
+
             val florFinal = flor.copy(
-                fotoUri = rutaFinal, // Guardamos el path string, no el URI temporal
-                fechaAvistamiento = System.currentTimeMillis()
+                userId = userId,
+                fotoUri = rutaFinal,
+                fechaAvistamiento = System.currentTimeMillis(),
+                needsSync = true
             )
+
             dao.insertar(florFinal)
+
+            programarSincronizacion()
+
             _scanState.value = ScanUiState.Initial
             currentPhotoUri = null
         }
+    }
+
+    private fun programarSincronizacion() {
+        val constraints = Constraints.Builder()
+            .setRequiredNetworkType(NetworkType.CONNECTED)
+            .build()
+
+        val uploadWorkRequest = OneTimeWorkRequestBuilder<SyncWorker>()
+            .setConstraints(constraints)
+            .build()
+
+        WorkManager.getInstance(context).enqueue(uploadWorkRequest)
     }
 
     fun resetScanState() {
@@ -96,6 +125,7 @@ class FlowerViewModel(
 
     private fun mapearDtoAEntidad(dto: FlorDto): Flor {
         return Flor(
+            userId = "local_user",
             nombreCientifico = dto.nombreCientifico ?: "Desconocido",
             nombreComun = dto.nombreComun ?: "Desconocido",
             familia = dto.familia ?: "Desconocida",
