@@ -239,7 +239,7 @@ fun VerifyPage(
             ButtonElement(
                 text = "Cancelar",
                 textStyle = MaterialTheme.typography.titleMedium,
-                onClick = { showExitDialog },
+                onClick = { showExitDialog = true },
                 modifier = Modifier
                     .fillMaxWidth(),
                 icon = R.drawable.undo_icon,
