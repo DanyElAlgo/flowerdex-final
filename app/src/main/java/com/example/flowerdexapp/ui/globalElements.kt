@@ -11,7 +11,13 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Brightness4
+import androidx.compose.material.icons.filled.Brightness7
+import androidx.compose.material.icons.filled.BrightnessAuto
 import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -28,6 +34,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.flowerdexapp.R
+import com.example.flowerdexapp.data.AppTheme
 
 @Composable
 fun ButtonElement(
@@ -136,5 +143,32 @@ fun ImageElement(
                     .border(borderThicknessDp.dp, Color.Black, shape)
             )
         }
+    }
+}
+
+@Composable
+fun ThemeSwitcherButton(
+    currentTheme: AppTheme,
+    onSwitchTheme: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val icon = when (currentTheme) {
+        AppTheme.LIGHT -> Icons.Default.Brightness7
+        AppTheme.DARK -> Icons.Default.Brightness4
+        AppTheme.SYSTEM -> Icons.Default.BrightnessAuto
+    }
+
+    val description = when (currentTheme) {
+        AppTheme.LIGHT -> "Cambiar a modo oscuro"
+        AppTheme.DARK -> "Cambiar a modo sistema"
+        AppTheme.SYSTEM -> "Cambiar a modo claro"
+    }
+
+    IconButton(onClick = onSwitchTheme, modifier = modifier) {
+        Icon(
+            imageVector = icon,
+            contentDescription = description,
+            tint = MaterialTheme.colorScheme.primary
+        )
     }
 }
