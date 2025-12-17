@@ -90,7 +90,8 @@ fun LoginPage(
             Image(
                 painter = painterResource(id = R.drawable.flowerdex_icon),
                 contentDescription = "Logo",
-                modifier = Modifier.size(120.dp)
+                modifier = Modifier.size(120.dp),
+                colorFilter = androidx.compose.ui.graphics.ColorFilter.tint(MaterialTheme.colorScheme.onBackground)
             )
 
             Spacer(modifier = Modifier.height(32.dp))

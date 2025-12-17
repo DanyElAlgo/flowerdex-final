@@ -61,7 +61,8 @@ fun HomePage(
             Image(
                 painter = painterResource(id = R.drawable.flowerdex_icon),
                 contentDescription = "Logo Flowerdex",
-                modifier = Modifier.size(200.dp)
+                modifier = Modifier.size(200.dp),
+                colorFilter = androidx.compose.ui.graphics.ColorFilter.tint(MaterialTheme.colorScheme.onBackground)
             )
         }
 
