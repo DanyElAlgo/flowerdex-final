@@ -64,9 +64,9 @@ class MainActivity : ComponentActivity() {
 
         val database = AppDatabase.getDatabase(applicationContext)
         val viewModelFactory = FlowerViewModelFactory(this.application, database.florDao())
-        val themeViewModel = androidx.lifecycle.viewmodel.compose.viewModel<ThemeViewModel>()
 
         setContent {
+            val themeViewModel = androidx.lifecycle.viewmodel.compose.viewModel<ThemeViewModel>()
             val themeState by themeViewModel.theme.collectAsState()
 
             val isDarkTheme = when (themeState) {
@@ -210,14 +210,5 @@ fun MainNavigationWrapper(
                 )
             }
         }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    FlowerdexAppTheme {
-        val viewModel: FlowerViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
-        MainNavigationWrapper(viewModel = viewModel)
     }
 }
