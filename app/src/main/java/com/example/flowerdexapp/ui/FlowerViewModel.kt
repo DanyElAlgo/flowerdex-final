@@ -21,10 +21,20 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import androidx.work.Constraints
+import androidx.work.NetworkType
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
+import com.example.flowerdexapp.data.FlowerRepository
+import com.example.flowerdexapp.workers.SyncWorker
+import com.example.flowerdexapp.data.SupabaseClient
+import io.github.jan.supabase.gotrue.auth
+import io.github.jan.supabase.postgrest.from
 
 sealed class ScanUiState {
     object Initial : ScanUiState()
     object Loading : ScanUiState()
+    object Saving : ScanUiState()
     data class Success(val florTemporal: Flor, val imageUri: Uri) : ScanUiState()
     data class Error(val mensaje: String) : ScanUiState()
 }
@@ -36,6 +46,7 @@ class FlowerViewModel(
 
     private val context = application.applicationContext
     private val geminiService = GeminiFlowerdexService()
+    private val repository = FlowerRepository(context, dao)
 
     val flores: StateFlow<List<Flor>> = dao.obtenerTodas()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
@@ -74,19 +85,32 @@ class FlowerViewModel(
         return dao.obtenerFlorPorId(id)
     }
 
-    fun guardarFlorVerificada(flor: Flor) {
+    fun guardarFlorVerificada(flor: Flor, onSuccess: () -> Unit) {
         val uriTemporal = (scanState.value as? ScanUiState.Success)?.imageUri ?: return
-
         viewModelScope.launch {
-            val rutaFinal = ImageUtils.saveImageToInternalStorage(context, uriTemporal)
-            val florFinal = flor.copy(
-                fotoUri = rutaFinal, // Guardamos el path string, no el URI temporal
-                fechaAvistamiento = System.currentTimeMillis()
-            )
-            dao.insertar(florFinal)
-            _scanState.value = ScanUiState.Initial
-            currentPhotoUri = null
+            _scanState.value = ScanUiState.Saving
+            try {
+                repository.guardarFlorOnline(flor, uriTemporal)
+                _scanState.value = ScanUiState.Success(flor, uriTemporal)
+                onSuccess()
+                _scanState.value = ScanUiState.Initial
+            } catch (e: Exception) {
+                e.printStackTrace()
+                _scanState.value = ScanUiState.Error("No se pudo guardar la flor. ${e.message}")
+            }
         }
+    }
+
+    private fun programarSincronizacion() {
+        val constraints = Constraints.Builder()
+            .setRequiredNetworkType(NetworkType.CONNECTED)
+            .build()
+
+        val uploadWorkRequest = OneTimeWorkRequestBuilder<SyncWorker>()
+            .setConstraints(constraints)
+            .build()
+
+        WorkManager.getInstance(context).enqueue(uploadWorkRequest)
     }
 
     fun resetScanState() {
@@ -96,12 +120,12 @@ class FlowerViewModel(
 
     private fun mapearDtoAEntidad(dto: FlorDto): Flor {
         return Flor(
+            userId = "local_user",
             nombreCientifico = dto.nombreCientifico ?: "Desconocido",
             nombreComun = dto.nombreComun ?: "Desconocido",
             familia = dto.familia ?: "Desconocida",
             descripcion = dto.descripcion,
             exposicionSolar = try { TipoExposicion.valueOf(dto.exposicionSolar ?: "") } catch (e: Exception) { TipoExposicion.SEMI_SOMBRA },
-            frecuenciaRiego = 1, // Failsafe, TODO: Mejorar
             estacionPreferida = try { TipoEstacion.valueOf(dto.estacionPreferida ?: "") } catch (e: Exception) { TipoEstacion.NINGUNA },
             alcalinidadPreferida = dto.alcalinidadPreferida ?: "Desconocida",
             colores = dto.colores?.mapNotNull { colorName ->

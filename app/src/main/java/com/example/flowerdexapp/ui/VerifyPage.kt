@@ -21,6 +21,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -64,6 +65,40 @@ fun VerifyPage(
         showExitDialog = true
     }
 
+    if (scanState is ScanUiState.Saving) {
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                CircularProgressIndicator()
+                Spacer(modifier = Modifier.height(16.dp))
+                Text("Subiendo flor a la nube...")
+                Text("Por favor espera", style = MaterialTheme.typography.bodySmall)
+            }
+        }
+        return
+    }
+
+    if (scanState is ScanUiState.Error) {
+        val errorMsg = (scanState as ScanUiState.Error).mensaje
+        Column(
+            modifier = modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text("Error al guardar:")
+            Text(errorMsg, color = MaterialTheme.colorScheme.error)/*
+            Button(onClick = {
+                viewModel.guardarFlorVerificada(flor) {
+                    onSaveSuccess()
+                }
+            }) { Text("Reintentar") }*/
+            Button(onClick = onBackClick) { Text("Volver") }
+        }
+        return
+    }
+
     if(scanState !is ScanUiState.Success){
         Column(
             modifier = modifier
@@ -74,7 +109,6 @@ fun VerifyPage(
         ){
             Text("Error: No hay datos de escaneo para verificar.")
             Button(onClick = onBackClick) { Text("Volver") }
-
         }
         return
     }
@@ -215,8 +249,9 @@ fun VerifyPage(
                 text = "Guardar",
                 textStyle = MaterialTheme.typography.titleMedium,
                 onClick = {
-                    viewModel.guardarFlorVerificada(flor)
-                    onSaveSuccess()
+                    viewModel.guardarFlorVerificada(flor) {
+                        onSaveSuccess()
+                    }
                 },
                 modifier = Modifier
                     .fillMaxWidth(),

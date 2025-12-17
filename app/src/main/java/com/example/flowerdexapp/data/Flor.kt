@@ -7,20 +7,20 @@ import androidx.room.PrimaryKey
 data class Flor(
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0,
+    val userId: String,
     val nombreCientifico: String,
     val nombreComun: String,
     val familia: String,
     val descripcion: String? = null,
-
     val exposicionSolar: TipoExposicion,
-    val frecuenciaRiego: Int,
     val estacionPreferida: TipoEstacion,
     val alcalinidadPreferida: String,
     val colores: List<TipoColor>,
     val esToxica: Boolean,
 
     val fechaAvistamiento: Long? = null,
-    val fotoUri: String? = null
+    val fotoUri: String? = null,
+    val needsSync: Boolean = true
 )
 
 enum class TipoExposicion(val descripcion: String) {

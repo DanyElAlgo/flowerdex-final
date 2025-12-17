@@ -37,12 +37,14 @@ import com.example.flowerdexapp.ui.FlowerViewModel
 import com.example.flowerdexapp.ui.FlowerViewModelFactory
 import com.example.flowerdexapp.ui.HomePage
 import com.example.flowerdexapp.ui.IndexPage
+import com.example.flowerdexapp.ui.LoginPage
 import com.example.flowerdexapp.ui.RegisterPage
 import com.example.flowerdexapp.ui.VerifyPage
 import com.example.flowerdexapp.ui.theme.FlowerdexAppTheme
 
 sealed class Screen(val route: String){
     object Home : Screen("home")
+    object Login : Screen("login")
     object Register : Screen("register")
     object Verify : Screen("verify")
     object Index : Screen("index")
@@ -81,7 +83,7 @@ fun MainNavigationWrapper(viewModel: FlowerViewModel) {
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
-            if (currentRoute != Screen.Home.route) {
+            if (currentRoute != Screen.Home.route && currentRoute != Screen.Login.route) {
                 TopAppBar(
                     colors = TopAppBarDefaults.topAppBarColors(
                         containerColor = MaterialTheme.colorScheme.primaryContainer,
@@ -110,7 +112,7 @@ fun MainNavigationWrapper(viewModel: FlowerViewModel) {
     ) { innerPadding ->
         NavHost(
             navController = navController,
-            startDestination = Screen.Home.route,
+            startDestination = Screen.Login.route,
             modifier = Modifier.padding(innerPadding)
         ) {
             // RUTA 1: Lista de Flores (Index)
@@ -173,7 +175,17 @@ fun MainNavigationWrapper(viewModel: FlowerViewModel) {
                         popUpTo(Screen.Home.route) { inclusive = false }
                     } }
                 )
+            }
 
+            // RUTA 6: Login
+            composable(Screen.Login.route) {
+                LoginPage(
+                    onLoginSuccess = {
+                        navController.navigate(Screen.Home.route) {
+                            popUpTo(Screen.Login.route) { inclusive = true }
+                        }
+                    }
+                )
             }
         }
     }
