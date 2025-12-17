@@ -148,6 +148,10 @@ class FlowerViewModel(
         currentPhotoUri = null
     }
 
+    fun updateFilter(newState: FlowerFilterState) {
+        _filterState.value = newState
+    }
+
     private fun mapearDtoAEntidad(dto: FlorDto): Flor {
         return Flor(
             userId = "local_user",

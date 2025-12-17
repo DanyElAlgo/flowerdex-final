@@ -43,9 +43,20 @@ fun IndexPage(
     modifier: Modifier = Modifier
 ) {
     val listaFlores by viewModel.flores.collectAsState(initial = emptyList())
+    val filterState by viewModel.filterState.collectAsState()
+    var showFilterSheet by remember { mutableStateOf(false) }
+
+    if (showFilterSheet) {
+        FilterBottomSheet(
+        currentFilter = filterState,
+        onFilterChange = { newState -> viewModel.updateFilter(newState) },
+        onDismiss = { showFilterSheet = false }
+        )
+    }
 
     IndexPageContent(
         listaFlores = listaFlores,
+        onSortClick = { showFilterSheet = true },
         onFlowerClick = onFlowerClick,
         onRegisterClick = onRegisterClick,
         modifier = modifier
@@ -54,6 +65,7 @@ fun IndexPage(
 @Composable
 fun IndexPageContent(
     listaFlores: List<Flor>,
+    onSortClick: () -> Unit,
     onFlowerClick: (Long) -> Unit,
     onRegisterClick: () -> Unit,
     modifier: Modifier = Modifier
@@ -113,7 +125,7 @@ fun IndexPageContent(
             Row(
                 modifier = Modifier
                     .clip(RoundedCornerShape(8.dp))
-                    .clickable { /* TODO: Open Sort Dialog */ }
+                    .clickable { onSortClick() }
                     .padding(8.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -163,115 +175,3 @@ fun IndexPageContent(
         }
     }
 }
-
-//@Preview(showBackground = true, showSystemUi = true)
-@Composable
-fun IndexPagePreviewEmpty() {
-    IndexPageContent(
-        listaFlores = emptyList(),
-        onFlowerClick = {},
-        onRegisterClick = {}
-    )
-}
-/*
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-fun IndexPagePreviewPopulated() {
-    val dummyFlowers = listOf(
-        Flor(
-            id = 1,
-            nombreCientifico = "Rosa",
-            nombreComun = "Rosa Roja",
-            familia = "Rosáceas",
-            exposicionSolar = TipoExposicion.SOL_DIRECTO,
-            estacionPreferida = TipoEstacion.PRIMAVERA,
-            alcalinidadPreferida = "Media",
-            colores = listOf(TipoColor.ROJO),
-            esToxica = false
-        ),
-        Flor(
-            id = 2,
-            nombreCientifico = "Helianthus",
-            nombreComun = "Girasol",
-            familia = "Asteraceae",
-            exposicionSolar = TipoExposicion.SOL_DIRECTO,
-            estacionPreferida = TipoEstacion.VERANO,
-            alcalinidadPreferida = "Alta",
-            colores = listOf(TipoColor.AMARILLO),
-            esToxica = false
-        ),
-        Flor(
-            id = 1,
-            nombreCientifico = "Rosa",
-            nombreComun = "Rosa Roja",
-            familia = "Rosáceas",
-            exposicionSolar = TipoExposicion.SOL_DIRECTO,
-            estacionPreferida = TipoEstacion.PRIMAVERA,
-            alcalinidadPreferida = "Media",
-            colores = listOf(TipoColor.ROJO),
-            esToxica = false
-        ),
-        Flor(
-            id = 2,
-            nombreCientifico = "Helianthus",
-            nombreComun = "Girasol",
-            familia = "Asteraceae",
-            exposicionSolar = TipoExposicion.SOL_DIRECTO,
-            estacionPreferida = TipoEstacion.VERANO,
-            alcalinidadPreferida = "Alta",
-            colores = listOf(TipoColor.AMARILLO),
-            esToxica = false
-        ),
-        Flor(
-            id = 1,
-            nombreCientifico = "Rosa",
-            nombreComun = "Rosa Roja",
-            familia = "Rosáceas",
-            exposicionSolar = TipoExposicion.SOL_DIRECTO,
-            estacionPreferida = TipoEstacion.PRIMAVERA,
-            alcalinidadPreferida = "Media",
-            colores = listOf(TipoColor.ROJO),
-            esToxica = false
-        ),
-        Flor(
-            id = 2,
-            nombreCientifico = "Helianthus",
-            nombreComun = "Girasol",
-            familia = "Asteraceae",
-            exposicionSolar = TipoExposicion.SOL_DIRECTO,
-            estacionPreferida = TipoEstacion.VERANO,
-            alcalinidadPreferida = "Alta",
-            colores = listOf(TipoColor.AMARILLO),
-            esToxica = false
-        ),
-        Flor(
-            id = 1,
-            nombreCientifico = "Rosa",
-            nombreComun = "Rosa Roja",
-            familia = "Rosáceas",
-            exposicionSolar = TipoExposicion.SOL_DIRECTO,
-            estacionPreferida = TipoEstacion.PRIMAVERA,
-            alcalinidadPreferida = "Media",
-            colores = listOf(TipoColor.ROJO),
-            esToxica = false
-        ),
-        Flor(
-            id = 2,
-            nombreCientifico = "Helianthus",
-            nombreComun = "Girasol",
-            familia = "Asteraceae",
-            exposicionSolar = TipoExposicion.SOL_DIRECTO,
-            estacionPreferida = TipoEstacion.VERANO,
-            alcalinidadPreferida = "Alta",
-            colores = listOf(TipoColor.AMARILLO),
-            esToxica = false
-        )
-    )
-
-    IndexPageContent(
-        listaFlores = dummyFlowers,
-        onFlowerClick = {},
-        onRegisterClick = {}
-    )
-}
-*/
