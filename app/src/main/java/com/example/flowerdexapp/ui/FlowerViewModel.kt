@@ -33,6 +33,8 @@ import com.example.flowerdexapp.utils.SortOption
 import io.github.jan.supabase.gotrue.auth
 import io.github.jan.supabase.postgrest.from
 import kotlinx.coroutines.flow.combine
+import java.time.Instant
+import java.time.format.DateTimeParseException
 
 sealed class ScanUiState {
     object Initial : ScanUiState()
@@ -165,7 +167,16 @@ class FlowerViewModel(
             colores = dto.colores?.mapNotNull { colorName ->
                 try { TipoColor.valueOf(colorName) } catch (e: Exception) { null }
             } ?: emptyList(),
-            esToxica = dto.esToxica ?: false
+            esToxica = dto.esToxica ?: false,
+            fechaAvistamiento = try {
+                if (dto.createdAt != null) {
+                    Instant.parse(dto.createdAt).toEpochMilli()
+                } else {
+                    System.currentTimeMillis()
+                }
+            } catch (e: Exception) {
+                System.currentTimeMillis()
+            }
         )
     }
 }
