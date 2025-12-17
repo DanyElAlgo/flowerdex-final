@@ -15,6 +15,8 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -27,8 +29,23 @@ import com.example.flowerdexapp.R
 fun HomePage(
     onRegisterClick: () -> Unit,
     onIndexClick: () -> Unit,
+    themeViewModel: ThemeViewModel,
     modifier: Modifier = Modifier
 ){
+    val currentTheme by themeViewModel.theme.collectAsState()
+
+    Box(
+        modifier = modifier
+            .fillMaxSize()
+    ) {
+        ThemeSwitcherButton(
+            currentTheme = currentTheme,
+            onSwitchTheme = { themeViewModel.toggleTheme() },
+            modifier = Modifier
+                .align(Alignment.TopEnd)
+                .padding(16.dp)
+        )
+        // Otra vez con mala identación para no mostrar tantos cambios en github
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -44,7 +61,8 @@ fun HomePage(
             Image(
                 painter = painterResource(id = R.drawable.flowerdex_icon),
                 contentDescription = "Logo Flowerdex",
-                modifier = Modifier.size(200.dp)
+                modifier = Modifier.size(200.dp),
+                colorFilter = androidx.compose.ui.graphics.ColorFilter.tint(MaterialTheme.colorScheme.onBackground)
             )
         }
 
@@ -95,10 +113,5 @@ fun HomePage(
             )
         }
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun HomePagePreview(){
-    HomePage(onRegisterClick = {}, onIndexClick = {})
+    }
 }

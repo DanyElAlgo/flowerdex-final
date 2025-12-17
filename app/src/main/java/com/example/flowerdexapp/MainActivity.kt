@@ -41,6 +41,10 @@ import com.example.flowerdexapp.ui.LoginPage
 import com.example.flowerdexapp.ui.RegisterPage
 import com.example.flowerdexapp.ui.VerifyPage
 import com.example.flowerdexapp.ui.theme.FlowerdexAppTheme
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.runtime.collectAsState
+import com.example.flowerdexapp.data.AppTheme
+import com.example.flowerdexapp.ui.ThemeViewModel
 
 sealed class Screen(val route: String){
     object Home : Screen("home")
@@ -62,11 +66,24 @@ class MainActivity : ComponentActivity() {
         val viewModelFactory = FlowerViewModelFactory(this.application, database.florDao())
 
         setContent {
-            FlowerdexAppTheme {
+            val themeViewModel = androidx.lifecycle.viewmodel.compose.viewModel<ThemeViewModel>()
+            val themeState by themeViewModel.theme.collectAsState()
+
+            val isDarkTheme = when (themeState) {
+                AppTheme.LIGHT -> false
+                AppTheme.DARK -> true
+                AppTheme.SYSTEM -> isSystemInDarkTheme()
+            }
+            FlowerdexAppTheme(
+                darkTheme = isDarkTheme
+            ) {
                 val viewModel: FlowerViewModel = androidx.lifecycle.viewmodel.compose.viewModel(
                     factory = viewModelFactory
                 )
-                MainNavigationWrapper(viewModel = viewModel)
+                MainNavigationWrapper(
+                    viewModel = viewModel,
+                    themeViewModel = themeViewModel
+                )
             }
         }
     }
@@ -74,7 +91,10 @@ class MainActivity : ComponentActivity() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainNavigationWrapper(viewModel: FlowerViewModel) {
+fun MainNavigationWrapper(
+    viewModel: FlowerViewModel,
+    themeViewModel: ThemeViewModel
+) {
     val navController = rememberNavController()
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -149,7 +169,8 @@ fun MainNavigationWrapper(viewModel: FlowerViewModel) {
             ) {
                 HomePage(
                     onRegisterClick = { navController.navigate(Screen.Register.route) },
-                    onIndexClick = { navController.navigate(Screen.Index.route) }
+                    onIndexClick = { navController.navigate(Screen.Index.route) },
+                    themeViewModel = themeViewModel
                 )
             }
 
@@ -184,18 +205,10 @@ fun MainNavigationWrapper(viewModel: FlowerViewModel) {
                         navController.navigate(Screen.Home.route) {
                             popUpTo(Screen.Login.route) { inclusive = true }
                         }
-                    }
+                    },
+                    themeViewModel = themeViewModel
                 )
             }
         }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    FlowerdexAppTheme {
-        val viewModel: FlowerViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
-        MainNavigationWrapper(viewModel = viewModel)
     }
 }
