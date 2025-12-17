@@ -28,8 +28,11 @@ import androidx.work.WorkManager
 import com.example.flowerdexapp.data.FlowerRepository
 import com.example.flowerdexapp.workers.SyncWorker
 import com.example.flowerdexapp.data.SupabaseClient
+import com.example.flowerdexapp.utils.FlowerFilterState
+import com.example.flowerdexapp.utils.SortOption
 import io.github.jan.supabase.gotrue.auth
 import io.github.jan.supabase.postgrest.from
+import kotlinx.coroutines.flow.combine
 
 sealed class ScanUiState {
     object Initial : ScanUiState()
@@ -48,8 +51,35 @@ class FlowerViewModel(
     private val geminiService = GeminiFlowerdexService()
     private val repository = FlowerRepository(context, dao)
 
-    val flores: StateFlow<List<Flor>> = dao.obtenerTodas()
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+    private val _filterState = MutableStateFlow(FlowerFilterState())
+    val filterState = _filterState.asStateFlow()
+
+    private val _rawFlores = dao.obtenerTodas()
+    val flores = combine(_rawFlores, _filterState) { flowers, filter ->
+        var result = flowers
+
+        if (filter.hideToxic) {
+            result = result.filter { !it.esToxica }
+        }
+        if (filter.hideSunOnly) {
+            result = result.filter { it.exposicionSolar != TipoExposicion.SOL_DIRECTO }
+        }
+        if (filter.hideShadeOnly) {
+            result = result.filter { it.exposicionSolar != TipoExposicion.SOMBRA_TOTAL }
+        }
+
+        result = when (filter.sortBy) {
+            SortOption.NOMBRE -> result.sortedBy { it.nombreComun }
+            SortOption.FECHA -> result.sortedBy { it.fechaAvistamiento ?: 0L }
+            SortOption.ALCALINIDAD -> result.sortedBy { it.alcalinidadPreferida }
+            SortOption.COLOR -> result.sortedBy { it.colores.firstOrNull()?.name ?: "" }
+            SortOption.TIPO_ESTACION -> result.sortedBy { it.estacionPreferida.name }
+        }
+        if (!filter.isAscending) {
+            result = result.reversed()
+        }
+        result
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     private val _scanState = MutableStateFlow<ScanUiState>(ScanUiState.Initial)
     val scanState = _scanState.asStateFlow()
