@@ -29,6 +29,7 @@ import com.example.flowerdexapp.data.FlowerRepository
 import com.example.flowerdexapp.workers.SyncWorker
 import com.example.flowerdexapp.data.SupabaseClient
 import io.github.jan.supabase.gotrue.auth
+import io.github.jan.supabase.postgrest.from
 
 sealed class ScanUiState {
     object Initial : ScanUiState()
@@ -86,16 +87,16 @@ class FlowerViewModel(
 
     fun guardarFlorVerificada(flor: Flor, onSuccess: () -> Unit) {
         val uriTemporal = (scanState.value as? ScanUiState.Success)?.imageUri ?: return
-
-        _scanState.value = ScanUiState.Saving
-
         viewModelScope.launch {
+            _scanState.value = ScanUiState.Saving
             try {
                 repository.guardarFlorOnline(flor, uriTemporal)
+                _scanState.value = ScanUiState.Success(flor, uriTemporal)
                 onSuccess()
                 _scanState.value = ScanUiState.Initial
             } catch (e: Exception) {
-                _scanState.value = ScanUiState.Error("No se pudo guardar la flor. Verifica tu conexión a internet e intenta de nuevo.")
+                e.printStackTrace()
+                _scanState.value = ScanUiState.Error("No se pudo guardar la flor. ${e.message}")
             }
         }
     }

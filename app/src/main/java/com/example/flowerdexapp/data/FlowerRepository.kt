@@ -24,7 +24,7 @@ class FlowerRepository(
         val bytes = context.contentResolver.openInputStream(uriTemporal)?.readBytes()
             ?: throw Exception("No se pudo leer la imagen")
 
-        val fileName = "user_${user.id}/${System.currentTimeMillis()}.jpg"
+        val fileName = "user_${user.id}-${System.currentTimeMillis()}.jpg"
         val bucket = supabase.storage.from("flores-img")
         bucket.upload(fileName, bytes, upsert = true)
         val publicUrl = bucket.publicUrl(fileName)

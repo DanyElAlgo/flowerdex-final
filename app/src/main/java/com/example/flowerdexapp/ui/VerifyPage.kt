@@ -80,6 +80,25 @@ fun VerifyPage(
         return
     }
 
+    if (scanState is ScanUiState.Error) {
+        val errorMsg = (scanState as ScanUiState.Error).mensaje
+        Column(
+            modifier = modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text("Error al guardar:")
+            Text(errorMsg, color = MaterialTheme.colorScheme.error)/*
+            Button(onClick = {
+                viewModel.guardarFlorVerificada(flor) {
+                    onSaveSuccess()
+                }
+            }) { Text("Reintentar") }*/
+            Button(onClick = onBackClick) { Text("Volver") }
+        }
+        return
+    }
+
     if(scanState !is ScanUiState.Success){
         Column(
             modifier = modifier

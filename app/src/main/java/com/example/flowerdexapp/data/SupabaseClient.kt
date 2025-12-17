@@ -19,7 +19,7 @@ object SupabaseClient {
 
         defaultSerializer = KotlinXSerializer(Json {
             ignoreUnknownKeys = true
-            encodeDefaults = true
+            encodeDefaults = false
         })
     }
 }
