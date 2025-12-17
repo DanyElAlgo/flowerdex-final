@@ -133,6 +133,9 @@ fun FilterBottomSheet(
 
             Text("Filtros:", style = MaterialTheme.typography.titleMedium)
 
+            FilterSwitchRow("Descendente/Ascendente", currentFilter.isAscending) {
+                onFilterChange(currentFilter.copy(isAscending = it))
+            }
             FilterSwitchRow("Ocultar Tóxicas", currentFilter.hideToxic) {
                 onFilterChange(currentFilter.copy(hideToxic = it))
             }
