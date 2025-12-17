@@ -44,6 +44,7 @@ import com.example.flowerdexapp.R
 @Composable
 fun LoginPage(
     onLoginSuccess: () -> Unit,
+    themeViewModel: ThemeViewModel,
     modifier: Modifier = Modifier
 ) {
     val viewModel: AuthViewModel = viewModel(factory = AuthViewModelFactory())
@@ -54,6 +55,8 @@ fun LoginPage(
     var password by remember { mutableStateOf("") }
     var isRegisterMode by remember { mutableStateOf(false) }
     var isPasswordVisible by remember { mutableStateOf(false) }
+    val currentTheme by themeViewModel.theme.collectAsState()
+
 
     LaunchedEffect(uiState) {
         when (uiState) {
@@ -70,6 +73,13 @@ fun LoginPage(
     }
 
     Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+        ThemeSwitcherButton(
+            currentTheme = currentTheme,
+            onSwitchTheme = { themeViewModel.toggleTheme() },
+            modifier = Modifier
+                .align(Alignment.TopEnd)
+                .padding(24.dp)
+        )
         Column(
             modifier = Modifier
                 .fillMaxSize()
